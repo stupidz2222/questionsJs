@@ -19,113 +19,123 @@
 </head>
 <body ng-controller="controller">
 	<div class="site-wrapper">
-		<div class="site-wrapper-inner">
-			<div class="cover-container">
-				<div class="masthead clearfix">
-					<div class="inner">
-						<h3 class="masthead-brand">Question Room</h3>
-						<nav>
-							<ul class="nav masthead-nav">
-								<li class="active"><a href="#">Home</a></li>
-								<li><a href="#">Features</a></li>
-								<li><a href="#">Contact</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-
-				<div class="inner cover">
-					<h1 class="cover-heading">Ask More Questions!</h1>
-					<p class="lead">This totally anonymous and real-time updating question moderated system permits students to ask more questions in a typical class setting.
-						Simply join a question room using a simple name (such as comp3111).</p>
-						<p class="lead" class="col-md-2 col-md-offset-5">
-							<form name="form" ng-submit="join()" class="navbar-form navbar-left" role="search">
-								<input type="text" name = "input" class="form-control large"
-								ng-model="example.text"
-								ng-pattern="example.word" required
-								ng-trim="false"
-								autofocus
-								aria-describedby="sizing-addon1"
-								placeholder="Room name">
-								<a href="#" class="btn btn-lg btn-default"
-								ng-hide="form.input.$error.required || form.input.$error.pattern"
-								ng-click="join()"
-								>Join</a>
-							</form>
-						</p>
-.
-						<div class="alert alert-warning" role="alert" ng-show="form.input.$error.required">
-							Room name is required!</div>
-							<div class="alert alert-warning" role="alert" ng-show="form.input.$error.pattern">
-								Room name must be a single English word!
-							</div>
-
-						</div>
-						
-						<div  class="roomList" ng-controller="myCtrl" scroll data-framework="firebase">
-						
-						<table id="roomTable" width="100%" style="text-align:left">
-						</table>
-						</div>
-
-						<div class="mastfoot">
-							<div class="inner">
-								<p>Cover template for <a href="http://getbootstrap.com">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-
+		<div class="roomForm">
+			<div align="center">
+				<img src="css/images/logo.png" width="250px" style="margin-left:auto;margin-right:auto;"/>
 			</div>
+			<div>
+				<form name="form" ng-submit="join()" role="search">
+					<input type="text" name="input" class="form-control"
+						ng-model="example.text"
+						ng-pattern="example.word" required
+						ng-trim="false"
+						autofocus
+						aria-describedby="sizing-addon1"
+						placeholder="Enter room name">
+				</form>
+				<div style="margin-top:30px;float:right;">
+					<button type="button" class="btn btn-success btn-primary btn-lg" 
+						ng-disabled="form.input.$error.required || form.input.$error.pattern"
+						ng-click="join()">JOIN</button>
+					<button type="button" class="btn btn-warning btn-primary btn-lg" style="margin-left:20px;">Take a look at existing room ?</button>
+				</div>
+			</div>
+		</div>
+		<div class="notice">
+			<a href="#""><img id="feature" src="css/images/notice-feature.png" width="250px;" onmouseover="noticeOnHover(this.id)" onmouseout="noticeOnLeft(this.id)" /></a>
+			<br />
+			<a href="#"><img id="admin" src="css/images/notice-admin.png" width="250px" onmouseover="noticeOnHover(this.id)" onmouseout="noticeOnLeft(this.id)" /></a>
+		</div>
+		
+		<div class="roomListTag">
+			<a href="#"><img src="css/images/rmlistTag.png" width="100px" /></a>
+		</div>
+		<!--
+		<div class="roomList" ng-controller="roomController" scroll data-framework="firebase">			
+			<table id="roomTable" style="text-align:left">
+			</table>
+		</div>
+		-->
+		<!--
+		<div class="info">
+			<img src="css/images/info.png" width="660px" />
+			<div style="margin-top:30px">
+				<input type="text" class="form-control" placeholder="Enter room name" />
+				<div style="margin-top:30px;float:right;">
+					<button type="button" class="btn btn-success btn-primary btn-lg disabled">JOIN</button>
+					<button type="button" class="btn btn-warning btn-primary btn-lg" style="margin-left:20px;">Take a look at existing room ?</button>
+				</div>
+			</div>
+		</div>
+		-->
+		<div class="lowerBanner">
+			<p style="margin-right:50px;">Created by <span style="color:red">#StupidFace</span> @HKUST</p>
+			<p style="margin-right:50px;">cover photo from Google Classroom</p>
+		<div>
+	</div>
 
-			<!-- Bootstrap core JavaScript
-			================================================== -->
-			<!-- Placed at the end of the document so the pages load faster -->
-			<script src="js/lib/jquery.min.js"></script>
-			<script src="js/lib/bootstrap.min.js"></script>
-			
-			<!-- 1.4.2 -->
-			<script src="js/lib/angular.min.js"></script>
-			<script src="js/lib/angularfire.js"></script>
-			<script src="js/lib/firebase.js"></script>
-
-			<script>
-			var app = angular.module('app', ["firebase"]);
-			app.controller('controller', ['$scope', '$location', '$window', function($scope, $location, $window) {
-				$scope.example = {
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="js/lib/jquery.min.js"></script>
+	<script src="js/lib/bootstrap.min.js"></script>
+	<!-- 1.4.2 -->
+	<script src="js/lib/angular.min.js"></script>
+	<script src="js/lib/angularfire.js"></script>
+	<script src="js/lib/firebase.js"></script>
+	<script>
+		var app = angular.module('app', ["firebase"]);
+		app.controller('controller', ['$scope', '$location', '$window', function($scope, $location, $window) {
+			$scope.example = {
 					text: '',
 					word: /^\s*\w*\s*$/
-				};
+			};
 
-				$scope.join = function () {
-					$window.location.href = 'question.html#/' + $scope.example.text;
-				}
-			}]);
-			</script>
-			
-			<script>
-			//var app = angular.module('app',["firebase"]);
-			app.controller('myCtrl',['$scope','$firebaseArray',function($scope,$firebaseArray)
-			{
-				var url = "https://classquestion.firebaseio.com/";
-				var echoRef = new Firebase(url);
+			$scope.join = function () {
+				$window.location.href = 'question.html#/' + $scope.example.text;
+			}
+		}]);
+		
+		function noticeOnHover(element){
+			var source = document.getElementById(element).src;
+			source = source.substring(0, source.length-4);
+			source += "-hover.png";
+			document.getElementById(element).src = source;
+		}
+		
+		function noticeOnLeft(element){
+			var source = document.getElementById(element).src;
+			source = source.substring(0, source.length-10);
+			source += ".png";
+			document.getElementById(element).src = source;
+		}
+		/*
+		// room list
+		// var app = angular.module('app',["firebase"]);
+		app.controller('roomController',['$scope','$firebaseArray',function($scope,$firebaseArray)
+		{
+			var url = "https://classquestion.firebaseio.com/";
+			var echoRef = new Firebase(url);
 	
-				var query = echoRef.orderByChild("true"); //The parameter does not exist so it will display all child in alphabetical order
-				var rooms = $firebaseArray(query);
-				
-				//while(rooms.length == 0);
-				var table = document.getElementById("roomTable");
-				setTimeout(function(){
-				for(var i = 0; i < rooms.length; i++)
-				{
-					var row = table.insertRow(i);
-					row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+rooms[i].$id+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+rooms[i].$id+'</a>';
-				}
-				},50);
-				$scope.rooms = rooms;
-			}]);
-		</script>
-		</body>
-		</html>
+			var query = echoRef.orderByChild("true"); //The parameter does not exist so it will display all child in alphabetical order
+			var rooms = $firebaseArray(query);
+			
+			//while(rooms.length == 0);
+			var table = document.getElementById("roomTable");
+			setTimeout(function(){
+			for(var i = 0; i < rooms.length; i++)
+			{
+				var row = table.insertRow(i);
+				row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+rooms[i].$id+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+rooms[i].$id+'</a>';
+			}
+			
+			},3000);
+			
+			$scope.rooms = rooms;
+		}]);
+		*/
+	</script>
+	
+	
+</body>
+</html>
