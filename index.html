@@ -53,13 +53,19 @@
 								>Join</a>
 							</form>
 						</p>
-
+.
 						<div class="alert alert-warning" role="alert" ng-show="form.input.$error.required">
 							Room name is required!</div>
 							<div class="alert alert-warning" role="alert" ng-show="form.input.$error.pattern">
 								Room name must be a single English word!
 							</div>
 
+						</div>
+						
+						<div  class="roomList" ng-controller="myCtrl" scroll data-framework="firebase">
+						
+						<table id="roomTable" width="100%" style="text-align:left">
+						</table>
 						</div>
 
 						<div class="mastfoot">
@@ -79,13 +85,15 @@
 			<!-- Placed at the end of the document so the pages load faster -->
 			<script src="js/lib/jquery.min.js"></script>
 			<script src="js/lib/bootstrap.min.js"></script>
-
+			
 			<!-- 1.4.2 -->
 			<script src="js/lib/angular.min.js"></script>
+			<script src="js/lib/angularfire.js"></script>
+			<script src="js/lib/firebase.js"></script>
 
 			<script>
-			angular.module('app', [])
-			.controller('controller', ['$scope', '$location', '$window', function($scope, $location, $window) {
+			var app = angular.module('app', ["firebase"]);
+			app.controller('controller', ['$scope', '$location', '$window', function($scope, $location, $window) {
 				$scope.example = {
 					text: '',
 					word: /^\s*\w*\s*$/
@@ -96,5 +104,28 @@
 				}
 			}]);
 			</script>
+			
+			<script>
+			//var app = angular.module('app',["firebase"]);
+			app.controller('myCtrl',['$scope','$firebaseArray',function($scope,$firebaseArray)
+			{
+				var url = "https://classquestion.firebaseio.com/";
+				var echoRef = new Firebase(url);
+	
+				var query = echoRef.orderByChild("true"); //The parameter does not exist so it will display all child in alphabetical order
+				var rooms = $firebaseArray(query);
+				
+				//while(rooms.length == 0);
+				var table = document.getElementById("roomTable");
+				setTimeout(function(){
+				for(var i = 0; i < rooms.length; i++)
+				{
+					var row = table.insertRow(i);
+					row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+rooms[i].$id+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+rooms[i].$id+'</a>';
+				}
+				},50);
+				$scope.rooms = rooms;
+			}]);
+		</script>
 		</body>
 		</html>
