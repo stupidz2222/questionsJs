@@ -30,7 +30,7 @@ if (!roomId || roomId.length === 0) {
 	roomId = "all";
 }
 
-var firebaseURL = "https://flickering-torch-4928.firebaseIO.com";
+var firebaseURL = "https://flickering-torch-4928.firebaseIO.com/";
 
 
 $scope.roomId = roomId;

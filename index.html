@@ -18,7 +18,7 @@
 	<link href="css/cover.css" rel="stylesheet">
 </head>
 <body ng-controller="controller">
-	<div class="site-wrapper">
+	<div class="site-wrapper" onclick="hideRoomList();">
 		<div class="roomForm">
 			<div align="center">
 				<img src="css/images/logo.png" width="250px" style="margin-left:auto;margin-right:auto;"/>
@@ -37,7 +37,7 @@
 					<button type="button" class="btn btn-success btn-primary btn-lg" 
 						ng-disabled="form.input.$error.required || form.input.$error.pattern"
 						ng-click="join()">JOIN</button>
-					<button type="button" class="btn btn-warning btn-primary btn-lg" style="margin-left:20px;">Take a look at existing room ?</button>
+					<button type="button" class="btn btn-warning btn-primary btn-lg" style="margin-left:20px;" onclick="showRoomList()">Take a look at existing room ?</button>
 				</div>
 			</div>
 		</div>
@@ -47,15 +47,20 @@
 			<a href="#"><img id="admin" src="css/images/notice-admin.png" width="250px" onmouseover="noticeOnHover(this.id)" onmouseout="noticeOnLeft(this.id)" /></a>
 		</div>
 		
-		<div class="roomListTag">
-			<a href="#"><img src="css/images/rmlistTag.png" width="100px" /></a>
+		<div id="roomListTag">
+			<a href="#"><img src="css/images/rmlistTag.png" width="100px" onclick="showRoomList()" /></a>
 		</div>
-		<!--
-		<div class="roomList" ng-controller="roomController" scroll data-framework="firebase">			
-			<table id="roomTable" style="text-align:left">
+		
+		<div id="roomList" ng-controller="roomController" scroll data-framework="firebase">
+			
+			<div id="roomTable">
+			</div>
+			<!--
+			<table id="roomTable">
 			</table>
+			-->
 		</div>
-		-->
+		
 		<!--
 		<div class="info">
 			<img src="css/images/info.png" width="660px" />
@@ -109,31 +114,70 @@
 			source += ".png";
 			document.getElementById(element).src = source;
 		}
-		/*
+		
+		function showRoomList(){
+			var list = document.getElementById("roomList");
+			var animation = setInterval(animate, 10);
+			var i = 0;
+			function animate(){
+				if (i == 72)
+					clearInterval(animation);
+				list.style.top = -75+(++i)+'%';
+			}
+		}
+		
+		function hideRoomList(){
+			if (document.getElementById("roomList").style.top == "-2%"){
+				
+				var list = document.getElementById("roomList");
+				var animation = setInterval(animate, 10);
+				var i = 0;
+				function animate(){
+				if (i == 72)
+					clearInterval(animation);
+				list.style.top = -2-(++i)+'%';
+				}
+				
+			}
+		}
+		
 		// room list
 		// var app = angular.module('app',["firebase"]);
 		app.controller('roomController',['$scope','$firebaseArray',function($scope,$firebaseArray)
 		{
-			var url = "https://classquestion.firebaseio.com/";
+			var url = "https://flickering-torch-4928.firebaseIO.com";
 			var echoRef = new Firebase(url);
-	
+			/*
 			var query = echoRef.orderByChild("true"); //The parameter does not exist so it will display all child in alphabetical order
 			var rooms = $firebaseArray(query);
+			*/
 			
-			//while(rooms.length == 0);
-			var table = document.getElementById("roomTable");
-			setTimeout(function(){
-			for(var i = 0; i < rooms.length; i++)
-			{
-				var row = table.insertRow(i);
-				row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+rooms[i].$id+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+rooms[i].$id+'</a>';
-			}
-			
-			},3000);
-			
-			$scope.rooms = rooms;
+			echoRef.on('value', function(data){
+				var table = document.getElementById("roomTable");
+				var i = 0;
+				data.forEach(function(room){
+					
+					var element = document.createElement("div");
+					element.innerHTML = '<a href="question.html#/'+room.key()+'">'+room.key()+'</a>';
+					table.appendChild(element);
+					i++;
+					if (i < data.numChildren()){
+						var line = document.createElement("div");
+						line.innerHTML = '<img src=\"css/images/separateLine.png\" width=\"300px\" class=\"separateLine\" />';
+						table.appendChild(line);
+					}
+					/*
+					var row = table.insertRow(i);
+					//row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+room.key()+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+room.key()+'</a>';
+					row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+room.key()+'">'+room.key()+'</a>';
+					i++;
+					*/
+				});
+				
+				//$scope.rooms = rooms;
+			});
 		}]);
-		*/
+		
 	</script>
 	
 	
