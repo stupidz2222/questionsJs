@@ -30,6 +30,9 @@ if (!roomId || roomId.length === 0) {
 	roomId = "all";
 }
 
+	$scope.predicate = 'timestamp';
+	$scope.reverse = true;
+
 var firebaseURL = "https://flickering-torch-4928.firebaseIO.com/";
 
 
