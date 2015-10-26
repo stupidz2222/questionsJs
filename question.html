@@ -42,11 +42,21 @@
 <img ng-show="$authData" src="https://graph.facebook.com/{{$authData.facebook.id}}/picture/?type=square&return_ssl_resources=1" alt="{{name}}" />
 {{$authData.facebook.displayName}}
 <button ng-show="$authData" class="btn btn-primary left" type="button" ng-click="FBLogout()">Logout</button>
-<select>
-	<option>Time</option>
-	<option>Like</option>
+
+<label for="order"> Select order: </label>
+
+<select name="orderby" ng-model="predicate">
+	<option value="timestamp">Time</option>
+	<option value="echo">Like</option>
 </select>
 
+<label for="order">Descending</label>
+<input type="checkbox" name = "desc" ng-model = "reverse" ng-value="true" />
+
+<!--
+<a href="" ng-click="order('echo')">Like</a>
+<a href="" ng-click="order('timestamp')">Time</a>
+-->
 
 <div class="input-group">
 	<!--
@@ -62,7 +72,7 @@ ng-model="input.wholeMsg" autofocus></textarea>
 
 
 <div class="list-group" id="todo-list">
-	<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
+	<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
 		<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
 			<span class="label label-danger" ng-show="todo.new">New</span>
 			<span class="badge">{{todo.echo}}</span>
