@@ -40,7 +40,7 @@ var questionList=[{
   desc: "desc",
   linkedDesc: "linkedDesc",
   completed: false,
-  timestamp: 0,
+  timestamp: 1396091934, // 3/29/2014
   tags: "...",
   echo: 2,
   order: 6
@@ -107,5 +107,71 @@ describe('TodoCtrl', function() {
         expect(""+filteredList[i].order).toEqual(i);
       }
     }));
+
+    // for testing ngtimeago filter
+    it('has a question filter', inject(function($filter) {
+      expect($filter('timeago')).not.toBeNull();
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {    // true
+      var timeresult = timeagoFilter(new Date().getTime()+33991782000, true);
+        expect(timeresult).toEqual("about a year ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) { // seconds < 45
+      var timeresult = timeagoFilter(new Date().getTime(), false);
+        expect(timeresult).toEqual("less than a minute ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-50000, false); // seconds < 90
+        expect(timeresult).toEqual("less than a minute ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-90000, false); // minutes < 45
+        expect(timeresult).toEqual("less than a minute ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-2760000, false); // -46 minutes
+        expect(timeresult).toEqual("about an hour ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-5460000, false); // - 91 minutes
+        expect(timeresult).toEqual("about 2 hours ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-90000000, false); // - 25 hours
+        expect(timeresult).toEqual("a day ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-154800000, false); // -43 hours
+        expect(timeresult).toEqual("2 days ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-2678400000, false); // -31 days
+        expect(timeresult).toEqual("a month ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-3974400000, false); // -46 days
+        expect(timeresult).toEqual("2 months ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-31622400000, false); // -366 days
+        expect(timeresult).toEqual("about a year ago");
+    }));
+
+    it('Filter order test', inject(function(timeagoFilter) {
+      var timeresult = timeagoFilter(new Date().getTime()-63072000000, false); // - 2 years
+        expect(timeresult).toEqual("2 years ago");
+    }));
+    // end of testing ngtimeago filter
   });
 });
