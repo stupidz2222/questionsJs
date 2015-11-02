@@ -33,8 +33,17 @@ describe('controllers unit test', function(){
     var ctrl = $controller('MyCtrl1', {
       $scope : scope
     });
+	
     var results = scope.getFirstAndRestSentence("Hello? This is Sung");
     expect(results[0]).toEqual('Hello?');
+	
+	var results = scope.getFirstAndRestSentence("? . ");
+	expect(results[0]).toEqual('?');
+	
+	var results = scope.getFirstAndRestSentence("Hello.co \nThis is Sung");
+	expect(results[0]).toEqual('Hello.');
+	
   }));
-
+  
 });
+
