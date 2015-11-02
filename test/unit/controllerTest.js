@@ -130,7 +130,7 @@ describe('TodoCtrl', function() {
 
         var testInputs = [
           {str:"Hello? This is Sung", exp: "Hello?"},
-          {str:"Hello.co? This is Sung", exp: "Hello.co?"},
+          {str:"Hello.co? ! This is Sung", exp: "Hello.co?"},
           {str:"Hello.co This is Sung", exp: "Hello.co This is Sung"},
           {str:"Hello.co \nThis is Sung", exp: "Hello.co \n"},
 		  {str:"? . ", exp: "?"},
@@ -266,6 +266,31 @@ describe('TodoCtrl', function() {
 		var ctrl = controller('TodoCtrl', {
           $scope: scope
         });
+		scope.todos = [{
+			wholeMsg: "",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			tags: "...",
+			echo: 0,
+			order: 1
+		},
+		{
+			wholeMsg: "",
+			head: "",
+			headLastChar: "?",
+			desc: "desc",
+			linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			tags: "...",
+			echo: 0,
+			order: 2
+		}];
+		scope.todos.$save = function (object) {};
 		scope.markAll(true);
 		scope.todos.forEach(function (todo) {
 			expect(todo.completed).toBe(true);
@@ -287,6 +312,38 @@ describe('TodoCtrl', function() {
 		var ctrl = controller('TodoCtrl', {
           $scope: scope
         });
+		scope.todos = [{
+			wholeMsg: "",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			tags: "...",
+			echo: 0,
+			order: 1
+		},
+		{
+			wholeMsg: "",
+			head: "",
+			headLastChar: "?",
+			desc: "desc",
+			linkedDesc: "linkedDesc",
+			completed: true,
+			timestamp: new Date().getTime(), // latest
+			tags: "...",
+			echo: 0,
+			order: 2
+		}];
+		scope.todos.$remove = function (object) {
+			var i = 0;
+			scope.todos.forEach(function () {
+				if (scope.todos[i] == object)
+					scope.todos.splice(i,1);
+				i++;
+			});
+		};
 		scope.clearCompletedTodos();
 		scope.todos.forEach(function (todo) {
 			expect(todo.completed).toBe(false);
