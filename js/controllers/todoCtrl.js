@@ -143,6 +143,18 @@ $scope.addEcho = function (todo) {
 	$scope.$storage[todo.$id] = "echoed";
 };
 
+// Dislike function
+$scope.subtractEcho = function (todo) {
+	$scope.editedTodo = todo;
+	todo.echo = todo.echo - 1;			// modified
+	// Hack to order using this order.
+	todo.order = todo.order -1;
+	$scope.todos.$save(todo);
+
+	// Disable the button
+	$scope.$storage[todo.$id] = "echoed";
+};
+
 $scope.doneEditing = function (todo) {
 	$scope.editedTodo = null;
 	var wholeMsg = todo.wholeMsg.trim();
