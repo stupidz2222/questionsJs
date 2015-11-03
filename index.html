@@ -32,6 +32,12 @@
 						autofocus
 						aria-describedby="sizing-addon1"
 						placeholder="Enter room name">
+					<div class="warning" role="alert" ng-show="form.input.$error.required">
+						Room name is required!
+					</div>
+					<div class="warning" role="alert" ng-show="form.input.$error.pattern">
+						Room name must be a single English word!
+					</div>
 				</form>
 				<div style="margin-top:30px;float:right;">
 					<button type="button" class="btn btn-success btn-primary btn-lg" 

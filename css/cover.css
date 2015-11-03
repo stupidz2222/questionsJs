@@ -111,3 +111,11 @@ html, body
 	font-weight: bold;
 	color: white;
 }
+.warning
+{
+	color: red;
+	font-size: 16px;
+	text-align: center;
+	font-weight: bold;
+	margin-top: 10px;
+}
