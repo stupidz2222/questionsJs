@@ -5,10 +5,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: 0,
-  tags: "...",
+  //tags: "...",
   echo: 3,
   order: 3
 },{
@@ -16,10 +16,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: 0,
-  tags: "...",
+  //tags: "...",
   echo: 2,
   order: 4
 },{
@@ -27,10 +27,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: 0,
-  tags: "...",
+  //tags: "...",
   echo: 2,
   order: 5
 },{
@@ -38,10 +38,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: 0,
-  tags: "...",
+  //tags: "...",
   echo: 2,
   order: 6
 },{
@@ -49,10 +49,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: new Date().getTime(), //new
-  tags: "...",
+  //tags: "...",
   echo: 2,
   order: 0
 },{
@@ -60,10 +60,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: new Date().getTime()-1, //new
-  tags: "...",
+  //tags: "...",
   echo: 0,
   order: 2
 },{
@@ -71,10 +71,10 @@ var toDoList=[{
   head: "head",
   headLastChar: "?",
   desc: "desc",
-  linkedDesc: "linkedDesc",
+  //linkedDesc: "linkedDesc",
   completed: false,
   timestamp: new Date().getTime(), // latest
-  tags: "...",
+  //tags: "...",
   echo: 0,
   order: 1
 }];
@@ -194,10 +194,10 @@ describe('TodoCtrl', function() {
 			head: "head",
 			headLastChar: "?",
 			desc: "desc",
-			linkedDesc: "linkedDesc",
+			//linkedDesc: "linkedDesc",
 			completed: false,
 			timestamp: new Date().getTime(), // latest
-			tags: "...",
+			//tags: "...",
 			echo: 0,
 			order: 1
 		},
@@ -206,10 +206,10 @@ describe('TodoCtrl', function() {
 			head: "",
 			headLastChar: "?",
 			desc: "desc",
-			linkedDesc: "linkedDesc",
+			//linkedDesc: "linkedDesc",
 			completed: false,
 			timestamp: new Date().getTime(), // latest
-			tags: "...",
+			//tags: "...",
 			echo: 0,
 			order: 2
 		}];
@@ -271,10 +271,10 @@ describe('TodoCtrl', function() {
 			head: "head",
 			headLastChar: "?",
 			desc: "desc",
-			linkedDesc: "linkedDesc",
+			//linkedDesc: "linkedDesc",
 			completed: false,
 			timestamp: new Date().getTime(), // latest
-			tags: "...",
+			//tags: "...",
 			echo: 0,
 			order: 1
 		},
@@ -283,10 +283,10 @@ describe('TodoCtrl', function() {
 			head: "",
 			headLastChar: "?",
 			desc: "desc",
-			linkedDesc: "linkedDesc",
+			//linkedDesc: "linkedDesc",
 			completed: false,
 			timestamp: new Date().getTime(), // latest
-			tags: "...",
+			//tags: "...",
 			echo: 0,
 			order: 2
 		}];
@@ -317,10 +317,10 @@ describe('TodoCtrl', function() {
 			head: "head",
 			headLastChar: "?",
 			desc: "desc",
-			linkedDesc: "linkedDesc",
+			//linkedDesc: "linkedDesc",
 			completed: false,
 			timestamp: new Date().getTime(), // latest
-			tags: "...",
+			//tags: "...",
 			echo: 0,
 			order: 1
 		},
@@ -329,10 +329,10 @@ describe('TodoCtrl', function() {
 			head: "",
 			headLastChar: "?",
 			desc: "desc",
-			linkedDesc: "linkedDesc",
+			//linkedDesc: "linkedDesc",
 			completed: true,
 			timestamp: new Date().getTime(), // latest
-			tags: "...",
+			//tags: "...",
 			echo: 0,
 			order: 2
 		}];

@@ -11,7 +11,7 @@ todomvc.controller('TodoCtrl',
 function ($scope, $location, $firebaseArray, $sce, $localStorage, $window) {
 	// set local storage
 	$scope.$storage = $localStorage;
-
+	
 	var scrollCountDelta = 10;
 	$scope.maxQuestion = scrollCountDelta;
 
@@ -64,10 +64,10 @@ $scope.$watchCollection('todos', function () {
 		}
 
 		// set time
-		todo.dateString = new Date(todo.timestamp).toString();
+		//todo.dateString = new Date(todo.timestamp).toString();
+		//$scope.$storage[todo.$id] = "";
 		todo.tags = todo.wholeMsg.match(/#\w+/g);
-
-		todo.trustedDesc = $sce.trustAsHtml(todo.linkedDesc);
+		//todo.trustedDesc = $sce.trustAsHtml(todo.linkedDesc);
 	});
 
 	$scope.totalCount = total;
@@ -116,10 +116,11 @@ $scope.addTodo = function () {
 		head: head,
 		headLastChar: head.slice(-1),
 		desc: desc,
-		linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
+		//linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
+		newQuestion: true,
 		completed: false,
 		timestamp: new Date().getTime(),
-		tags: "...",
+		//tags: "...",
 		echo: 0,
 		order: 0
 	});

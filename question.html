@@ -74,14 +74,14 @@ ng-model="input.wholeMsg" autofocus></textarea>
 <div class="list-group" id="todo-list">
 	<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
 		<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
-			<span class="label label-danger" ng-show="todo.new">New</span>
+			<span class="label label-danger" ng-show="todo.newQuestion">New</span>
 			<span class="badge">{{todo.echo}}</span>
 			<!-- switch -->
 			<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
 			<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
 			<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
 		</h4>
-		<p class="list-group-item-text"><span ng-bind-html="todo.trustedDesc"></span> created: {{todo.timestamp | timeago}}
+		<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>--> created: {{todo.timestamp | timeago}}
 			<span ng-show="todo.tags">tags: {{todo.tags}}</span></p>
 
 			<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]">Like <span class="glyphicon glyphicon-thumbs-up"></span></button> &nbsp &nbsp
