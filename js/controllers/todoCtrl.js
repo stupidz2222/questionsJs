@@ -11,6 +11,8 @@ todomvc.controller('TodoCtrl',
 function ($scope, $location, $firebaseArray, $sce, $localStorage, $window) {
 	// set local storage
 	$scope.$storage = $localStorage;
+	$scope.newNotification = false;
+	$scope.numberOfNewQuestions = 0;
 	
 	var scrollCountDelta = 10;
 	$scope.maxQuestion = scrollCountDelta;
@@ -71,7 +73,6 @@ $scope.$watchCollection('todos', function () {
 		if (todo.completed === false) {
 			remaining++;
 		}
-
 		// set time
 		//todo.dateString = new Date(todo.timestamp).toString();
 		//$scope.$storage[todo.$id] = "";
@@ -79,6 +80,14 @@ $scope.$watchCollection('todos', function () {
 		//todo.trustedDesc = $sce.trustAsHtml(todo.linkedDesc);
 	});
 
+	// new questions notification
+	if ($scope.totalCount != "undefined" && $scope.totalCount != 0 && total > $scope.totalCount){
+		var noOfNewQuestions = total - $scope.totalCount;
+		$scope.numberOfNewQuestions = noOfNewQuestions;
+		//alert("There are " + $scope.numberOfNewQuestions + " new questions");
+		$scope.setNewNotification(true);
+	}
+	
 	$scope.totalCount = total;
 	$scope.remainingCount = remaining;
 	$scope.completedCount = total - remaining;
@@ -286,6 +295,12 @@ $scope.adminLogout = function(){
 	echoRef.unauth();
 	delete $scope.$storage.authData;
 	$scope.isAdmin = false;
+}
+
+$scope.setNewNotification = function(show){
+	$scope.newNotification = show;
+	if (!show)
+		$scope.toTop();
 }
 
 }]);

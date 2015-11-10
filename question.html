@@ -40,7 +40,7 @@
 	<a ng-class="{selected: location.path() == '/about'}" class="btn btn-warning" href="#/about">About</a>
 -->
 
-<a class="btn btn-default" href="/index.html">Main</a>
+<a class="btn btn-default" href="index.html">Main</a>
 <!--
 <button ng-hide="$authData" class="btn btn-primary left" type="button" ng-click="FBLogin()">Want Admin? Sign in with Facebook</button>
 -->
@@ -103,6 +103,7 @@ ng-model="input.wholeMsg" autofocus></textarea>
 	type="button" ng-click="increaseMax()"> Show more</button>
 -->
 	</div>
+	<!-- Administrator login panel -->
 	<div id="adminLogin">
 		<div ng-show="!isAdmin">
 			<label for="userName">User Name : </label><input type="text" id="userName" ng-model="userName" />
@@ -115,8 +116,13 @@ ng-model="input.wholeMsg" autofocus></textarea>
 			<input type="submit" value="Logout" id="adminLogoiut" ng-click="adminLogout()" />
 		</div>
 	</div>
-
-
+	
+	<!-- Notification of new questions panel -->
+	
+	<div ng-show="newNotification" id="newNotification">
+		<span ng-click="setNewNotification(false)"><p> {{ numberOfNewQuestions }} new questions incoming...</p></span>
+	</div>
+	
 
 <!-- Autolink from https://github.com/gregjacobs/Autolinker.js> -->
 <script src="js/lib/Autolinker.min.js"></script>
