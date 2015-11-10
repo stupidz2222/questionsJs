@@ -3,12 +3,12 @@ html, body
 	height: 100%;
 	width: 100%;
 	margin: 0;
+	overflow: hidden;
 }
-.site-wrapper
+#siteWrapper
 {
 	width: 100%;
 	height: 100%;
-	margin: 0;
 	
 	background: url("images/indexbg.jpg") no-repeat;
 	-webkit-background-size: cover;
@@ -16,106 +16,115 @@ html, body
 	-o-background-size: cover;
 	background-size: cover;
 }
-.roomForm
+#contentWrapper
+{
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	transform: translateY(-50%);
+	/*background-color: rgba(0, 0, 0, 0.7);*/
+}
+.content
+{
+	opacity: 0;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 40%;
+	text-align: center;
+	color: white;
+	font-size: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	/*background-color: rgba(0, 0, 0, 0.7);*/
+}
+#room
+{
+	display: none;
+}
+#feature
+{
+	display: none;
+}
+#roomTable
+{
+	height: 250px;
+	overflow-y: scroll;
+	background-color: rgba(0, 0, 0, 0.7);
+	border-radius: 15px;
+}
+#roomTable div
+{
+	border-bottom: solid 1px white;
+	text-align: left;
+	line-height: 35px;
+}
+#roomTable a
+{
+	color: white;
+}
+#roomTable a:hover
+{
+	text-decoration: none;
+}
+#logo
 {
 	position: absolute;
 	top: 40%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
 }
-.info
-{
-	position: absolute;
-	top: 50%;
-	left: 60%;
-	transform: translateX(-50%) translateY(-50%);
-}
-.notice
+#navWrapper
 {
 	position: absolute;
 	top: 20%;
-	left: 70%;
-}
-#roomList
-{
-	position: absolute;
-	top: -75%;
-	left: 10%;
-	height: 75%;
-	width: 450px;
-	overflow: hidden;
-	
-	background: url("images/parchpaper2.png") no-repeat;
-	background-size: 450px auto;
-}
-#roomTable
-{
-	position: absolute;
-	left: 0;
-	right: -20px;
-	overflow-y: scroll;
-	height: 55%;
-	font-family: handWriting;
-	font-size: 48px;
-	margin-top: 50px;
-	line-height: 40px;
-	text-align: center;
-}
-.separateLine
-{
-	position: relative;
-	left: 30%;
+	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
-	margin-top: 20px;
+	width: 630px;
+	height: 150px;
+	text-align: center;
+	z-index: 50;
 }
-#roomTable a
+.navCircle
 {
-	color: black;
+	width: 180px;
+	height: 120px;
+	background: url("images/cloud.png") no-repeat;
+	background-size: 180px 120px;
+	float: left;
+	margin-left: 15px;
+	margin-right: 15px;
+	line-height: 120px;
+	font-size: 20px;
+	opacity: 0;
 }
-#roomTable a:hover
+.navCircle a
 {
-	color: red;
+	color: white;
 	text-decoration: none;
 }
-@font-face
+.navCircle a:hover
 {
-	font-family: handWriting;
-	src: url(font/VTCAllSkratchedUpOne.ttf);
+	text-decoration: none;
+	animation: shake 1s ease-in-out;
 }
-#roomListTag
-{
-	position: absolute;
-	top: 0;
-	left: 15%;
-	animation-name: toggle;
-	animation-duration: 0.5s;
-	animation-iteration-count: infinite;
-}
-@keyframes toggle
-{
-	0% {top: 0px;}
-	25% (top: 5px;)
-	50% {top: 10px;}
-	75% {top: 5px;}
-	100% {top: 0px;}
-}
-.lowerBanner
-{
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 50px;
-	
-	text-align: right;
-	font-weight: bold;
-	color: white;
+@keyframes shake {
+  0% {transform: translateX(0);}
+  20% {transform: translateX(-10px);}
+  40% {transform: translateX(10px);}
+  60% {transform: translateX(-10px);}
+  80% {transform: translateX(10px);}
+  100% {transform: translateX(0);}
 }
 .warning
 {
 	color: red;
-	font-size: 16px;
-	text-align: center;
-	font-weight: bold;
-	margin-top: 10px;
+}
+#eraser
+{
+	position: absolute;
+	bottom: 5%;
+	right: 10%;
+	transform: translateX(-50%) translateY(-50%);
+	display: block;
 }

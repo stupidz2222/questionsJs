@@ -18,12 +18,12 @@
 	<link href="css/cover.css" rel="stylesheet">
 </head>
 <body ng-controller="controller">
-	<div class="site-wrapper" onclick="hideRoomList();">
-		<div class="roomForm">
-			<div align="center">
-				<img src="css/images/logo.png" width="250px" style="margin-left:auto;margin-right:auto;"/>
-			</div>
-			<div>
+	<div id="siteWrapper">
+		<div id="contentWrapper">
+			<div class="content" id="home">
+				Feel bored in class? <br />
+				Enter a room name to join disucssion
+				<br /><br />
 				<form name="form" ng-submit="join()" role="search">
 					<input type="text" name="input" class="form-control"
 						ng-model="example.text"
@@ -32,59 +32,56 @@
 						autofocus
 						aria-describedby="sizing-addon1"
 						placeholder="Enter room name">
-					<div class="warning" role="alert" ng-show="form.input.$error.required">
-						Room name is required!
-					</div>
-					<div class="warning" role="alert" ng-show="form.input.$error.pattern">
-						Room name must be a single English word!
-					</div>
 				</form>
-				<div style="margin-top:30px;float:right;">
+				<div class="warning" role="alert" ng-show="form.input.$error.required">
+					Room name is required!
+				</div>
+				<div class="warning" role="alert" ng-show="form.input.$error.pattern">
+					Room name must be a single English word!
+				</div>
+				<br />
+				<div align="right">
 					<button type="button" class="btn btn-success btn-primary btn-lg" 
 						ng-disabled="form.input.$error.required || form.input.$error.pattern"
 						ng-click="join()">JOIN</button>
 					<button type="button" class="btn btn-warning btn-primary btn-lg" style="margin-left:20px;" onclick="showRoomList()">Take a look at existing room ?</button>
 				</div>
 			</div>
-		</div>
-		<div class="notice">
-			<a href="#""><img id="feature" src="css/images/notice-feature.png" width="250px;" onmouseover="noticeOnHover(this.id)" onmouseout="noticeOnLeft(this.id)" /></a>
-			<br />
-			<a href="#"><img id="admin" src="css/images/notice-admin.png" width="250px" onmouseover="noticeOnHover(this.id)" onmouseout="noticeOnLeft(this.id)" /></a>
-		</div>
-		
-		<div id="roomListTag">
-			<a href="#"><img src="css/images/rmlistTag.png" width="100px" onclick="showRoomList()" /></a>
-		</div>
-		
-		<div id="roomList" ng-controller="roomController" scroll data-framework="firebase">
-			
-			<div id="roomTable">
+			<div class="content" id="room" ng-controller="roomController" scroll data-framework="firebase">
+				Click one to join one of the current discussion.
+				<div id="roomTable">
+				</div>
 			</div>
-			<!--
-			<table id="roomTable">
-			</table>
-			-->
+			<div class="content" id="feature">
+				<div>
+					<img src="css/images/info.png" width="100%" />
+				</div>
+			</div>
+			
+		</div>
+		<div id="logo">
+			<img id="logo" src="css/images/logo4.png" width="300px" />
 		</div>
 		
-		<!--
-		<div class="info">
-			<img src="css/images/info.png" width="660px" />
-			<div style="margin-top:30px">
-				<input type="text" class="form-control" placeholder="Enter room name" />
-				<div style="margin-top:30px;float:right;">
-					<button type="button" class="btn btn-success btn-primary btn-lg disabled">JOIN</button>
-					<button type="button" class="btn btn-warning btn-primary btn-lg" style="margin-left:20px;">Take a look at existing room ?</button>
+		<div id="navWrapper">
+			<div>
+				<div class="navCircle">
+					<a href="#" id="navHome" class="navOption">HOME</a>
+				</div>
+				<div class="navCircle">
+					<a href="#" id="navRoom" class="navOption">ROOM</a>
+				</div>
+				<div class="navCircle">
+					<a href="#" id="navFeature" class="navOption">FEATURES</a>
 				</div>
 			</div>
 		</div>
-		-->
-		<div class="lowerBanner">
-			<p style="margin-right:50px;">Created by <span style="color:red">#StupidFace</span> @HKUST</p>
-			<p style="margin-right:50px;">cover photo from Google Classroom</p>
-		<div>
 	</div>
-
+	<div id="eraser">
+		<img src="css/images/eraser.png" width="120px" height="120px" />
+	</div>
+	
+	
 	<!-- Bootstrap core JavaScript
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
@@ -105,47 +102,13 @@
 			$scope.join = function () {
 				$window.location.href = 'question.html#/' + $scope.example.text;
 			}
+			
+			var url = "https://flickering-torch-4928.firebaseIO.com";
+			var echoRef = new Firebase(url);
+			
+			
 		}]);
 		
-		function noticeOnHover(element){
-			var source = document.getElementById(element).src;
-			source = source.substring(0, source.length-4);
-			source += "-hover.png";
-			document.getElementById(element).src = source;
-		}
-		
-		function noticeOnLeft(element){
-			var source = document.getElementById(element).src;
-			source = source.substring(0, source.length-10);
-			source += ".png";
-			document.getElementById(element).src = source;
-		}
-		
-		function showRoomList(){
-			var list = document.getElementById("roomList");
-			var animation = setInterval(animate, 10);
-			var i = 0;
-			function animate(){
-				if (i == 72)
-					clearInterval(animation);
-				list.style.top = -75+(++i)+'%';
-			}
-		}
-		
-		function hideRoomList(){
-			if (document.getElementById("roomList").style.top == "-2%"){
-				
-				var list = document.getElementById("roomList");
-				var animation = setInterval(animate, 10);
-				var i = 0;
-				function animate(){
-				if (i == 72)
-					clearInterval(animation);
-				list.style.top = -2-(++i)+'%';
-				}
-				
-			}
-		}
 		
 		// room list
 		// var app = angular.module('app',["firebase"]);
@@ -157,7 +120,6 @@
 			var query = echoRef.orderByChild("true"); //The parameter does not exist so it will display all child in alphabetical order
 			var rooms = $firebaseArray(query);
 			*/
-			
 			echoRef.on('value', function(data){
 				var table = document.getElementById("roomTable");
 				var i = 0;
@@ -167,11 +129,6 @@
 					element.innerHTML = '<a href="question.html#/'+room.key()+'">'+room.key()+'</a>';
 					table.appendChild(element);
 					i++;
-					if (i < data.numChildren()){
-						var line = document.createElement("div");
-						line.innerHTML = '<img src=\"css/images/separateLine.png\" width=\"300px\" class=\"separateLine\" />';
-						table.appendChild(line);
-					}
 					/*
 					var row = table.insertRow(i);
 					//row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+room.key()+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+room.key()+'</a>';
@@ -179,13 +136,104 @@
 					i++;
 					*/
 				});
-				
 				//$scope.rooms = rooms;
 			});
+			
+			
 		}]);
 		
+		
+		
+		function showRoomList(){
+			$('#navRoom').click();
+		}
 	</script>
-	
+	<script>
+		$(function(){
+			// initial animation
+			$(window).on("load", function(){
+				setTimeout(function(){
+					$('#contentWrapper').animate({height: '75%'}, 1000);
+					$('#logo').animate({left: '15%'}, 1000);
+					$('.navCircle').animate({opacity: '1'}, 1000);
+				}, 1000);
+				setTimeout(function(){
+					$('#home').animate({opacity: '1'}, 1000);;
+				}, 2000);
+			});
+			
+			// navigation
+			$('.navOption').on('click', function(){
+				var trigger = this.id;
+				setTimeout(function(){
+					$('.content').animate({opacity: '0'}, 500);
+					$('.content').css('display', 'none');
+				}, 2000);
+				$('#eraser').animate({bottom: '40%'}, 300);
+				$('#eraser').animate({right: '60%'}, 300);
+				$('#eraser').animate({right: '25%', bottom: '35%'}, 300);
+				$('#eraser').animate({right: '60%', bottom: '30%'}, 300);
+				$('#eraser').animate({right: '25%', bottom: '25%'}, 300);
+				$('#eraser').animate({right: '60%', bottom: '20%'}, 300);
+				$('#eraser').animate({right: '25%', bottom: '15%'}, 300);
+				$('#eraser').animate({right: '60%', bottom: '10%'}, 300);
+				$('#eraser').animate({right: '10%', bottom: '10%'}, 300);
+				setTimeout(function(){
+					$('#eraser').animate({right: '10%', bottom: '5%'}, 400);
+				}, 300);
+				setTimeout(function(){
+					switch (trigger)
+					{
+					case "navHome": 
+						$('#home').css('display', 'block');
+						$('#home').animate({opacity: '1'}, 500);
+						break;
+					case "navRoom":
+						$('#room').css('display', 'block');
+						$('#room').animate({opacity: '1'}, 500);
+						break;
+					case "navFeature":
+						$('#feature').css('display', 'block');
+						$('#feature').animate({opacity: '1'}, 500);
+						break;
+					}
+				}, 3000);
+				
+			});
+		});
+	</script>
+	<script>
+	/*
+		// administrator related
+		$('#submitLogin').on('click', function(){
+			var userName = $('#userName').val();
+			var pw = $('#userPassword').val();
+			
+			var url = "https://flickering-torch-4928.firebaseIO.com";
+			var ref = new Firebase(url);
+			ref.authWithPassword({
+				email    : userName,
+				password : pw
+			}, function(error, authData) { 
+				if (error === null){
+					alert(authData.password.email.toString() + "login success");
+					$('#adminLogin').append(authData.password.email.toString());
+					$scope.$authData = authData;
+					$scope.isAdmin = true;
+				}
+				else
+					alert(error);
+			}, {
+				remember: "sessionOnly"
+			});
+			
+		});
+		
+		$('#adminLogoiut').on('click', function(){
+			ref.unauth();
+		});
+		*/
+	</script>
 	
 </body>
 </html>

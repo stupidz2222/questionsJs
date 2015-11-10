@@ -101,6 +101,19 @@ ng-model="input.wholeMsg" autofocus></textarea>
 	type="button" ng-click="increaseMax()"> Show more</button>
 -->
 
+	<div id="adminLogin">
+		<div ng-show="!isAdmin">
+			<label for="userName">User Name : </label><input type="text" id="userName" ng-model="userName" />
+			<label for="userPassword">Password : </label><input type="password" id="userPassword" ng-model="userPassword" />
+			<input type="submit" value="Login" id="submitLogin" ng-click="adminLogin()" />
+			<span>{{ $authData.password.email }}</span>
+		</div>
+		<div ng-show="isAdmin">
+			<span>{{ $authData.password.email }}</span>
+			<input type="submit" value="Logout" id="adminLogoiut" ng-click="adminLogout()" />
+		</div>
+	</div>
+
 
 
 <!-- Autolink from https://github.com/gregjacobs/Autolinker.js> -->

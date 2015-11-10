@@ -48,6 +48,15 @@ $scope.todos = $firebaseArray(query);
 //$scope.input.wholeMsg = '';
 $scope.editedTodo = null;
 
+// check administrator login state
+if ($scope.$storage.authData != null){
+	alert($scope.$storage.authData.password.email);
+	//$scope.$apply(function(){
+		$scope.$authData = $scope.$storage.authData;
+		$scope.isAdmin = true;
+	//});
+}
+
 // pre-precessing for collection
 $scope.$watchCollection('todos', function () {
 	var total = 0;
@@ -247,5 +256,36 @@ angular.element($window).bind("scroll", function() {
 		$scope.$apply();
 	}
 });
+
+$scope.adminLogin = function(){
+	//var ref = new Firebase(firebaseURL);
+		
+	echoRef.authWithPassword({
+		email    : $scope.userName.trim(),
+		password : $scope.userPassword.trim()
+	}, function(error, authData) { 
+		if (error === null){
+			alert(authData.password.email.toString() + "login success");
+			//$('#adminLogin').append(authData.password.email.toString());
+			$scope.$apply(function(){
+				$scope.$storage.authData = authData;
+				$scope.$authData = authData;
+				$scope.isAdmin = true;
+			});
+		}
+		else
+			alert(error);
+	}, {
+		remember: "sessionOnly"
+	});
+}
+	
+$scope.adminLogout = function(){
+		
+	//var ref = new Firebase(firebaseURL);
+	echoRef.unauth();
+	delete $scope.$storage.authData;
+	$scope.isAdmin = false;
+}
 
 }]);
