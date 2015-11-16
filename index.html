@@ -50,6 +50,13 @@
 			<div class="content" id="room" ng-controller="roomController" scroll data-framework="firebase">
 				Click one to join one of the current discussion.
 				<div id="roomTable">
+					<table id="roomTableContent" width="100%">
+						<tr>
+							<th width="50%">Room Name</th>
+							<th width="25%">Room Type</th>
+							<th width="25%">Questions</th>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div class="content" id="feature">
@@ -80,6 +87,9 @@
 	<div id="eraser">
 		<img src="css/images/eraser.png" width="120px" height="120px" />
 	</div>
+	<div id="decoration">
+		<img src="css/images/decoration1.png" width="300px" />
+	</div>
 	
 	
 	<!-- Bootstrap core JavaScript
@@ -100,7 +110,7 @@
 			};
 
 			$scope.join = function () {
-				$window.location.href = 'question.html#/' + $scope.example.text;
+				$window.location.href = 'question2.html#/' + $scope.example.text;
 			}
 			
 			var url = "https://flickering-torch-4928.firebaseIO.com";
@@ -121,12 +131,17 @@
 			var rooms = $firebaseArray(query);
 			*/
 			echoRef.on('value', function(data){
-				var table = document.getElementById("roomTable");
+				var table = document.getElementById("roomTableContent");
 				var i = 0;
 				data.forEach(function(room){
 					
-					var element = document.createElement("div");
-					element.innerHTML = '<a href="question.html#/'+room.key()+'">'+room.key()+'</a>';
+					var element = document.createElement("tr");
+					if (room.child('questions').numChildren() >= 30)
+						element.innerHTML = '<td><img src="css/images/hotIcon.png" width=\"30px\" /><a href="question2.html#/'+room.key()+'">'+room.key()+'</a></td>';
+					else
+						element.innerHTML = '<td><a href="question2.html#/'+room.key()+'">'+room.key()+'</a></td>';
+					element.innerHTML += '<td>' + '<img src=\"css/images/unlockRoom.png\" height=\"30px\">' + '</td>';
+					element.innerHTML += "<td>" + room.child('questions').numChildren() + "</td>";
 					table.appendChild(element);
 					i++;
 					/*
@@ -141,12 +156,6 @@
 			
 			
 		}]);
-		
-		
-		
-		function showRoomList(){
-			$('#navRoom').click();
-		}
 	</script>
 	<script>
 		$(function(){
@@ -166,21 +175,25 @@
 			$('.navOption').on('click', function(){
 				var trigger = this.id;
 				setTimeout(function(){
-					$('.content').animate({opacity: '0'}, 500);
-					$('.content').css('display', 'none');
-				}, 2000);
+					$('.content').animate({opacity: '0'}, 400);
+					setTimeout(function(){
+						$('.content').css('display', 'none');
+					}, 400);
+				}, 1000);
 				$('#eraser').animate({bottom: '40%'}, 300);
 				$('#eraser').animate({right: '60%'}, 300);
-				$('#eraser').animate({right: '25%', bottom: '35%'}, 300);
-				$('#eraser').animate({right: '60%', bottom: '30%'}, 300);
-				$('#eraser').animate({right: '25%', bottom: '25%'}, 300);
+				$('#eraser img').attr('width', "150px");
+				$('#eraser img').attr('height', "150px");
+				$('#eraser img').attr('src', "css/images/eraserCleaning.png");
+				$('#eraser').animate({right: '15%', bottom: '30%'}, 300);
 				$('#eraser').animate({right: '60%', bottom: '20%'}, 300);
-				$('#eraser').animate({right: '25%', bottom: '15%'}, 300);
-				$('#eraser').animate({right: '60%', bottom: '10%'}, 300);
-				$('#eraser').animate({right: '10%', bottom: '10%'}, 300);
+				$('#eraser').animate({right: '10%', bottom: '10%'}, 400);
 				setTimeout(function(){
-					$('#eraser').animate({right: '10%', bottom: '5%'}, 400);
-				}, 300);
+					$('#eraser').animate({right: '10%', bottom: '5%'}, 300);
+					$('#eraser img').attr('width', "120px");
+					$('#eraser img').attr('height', "120px");
+					$('#eraser img').attr('src', "css/images/eraser.png");
+				}, 1600);
 				setTimeout(function(){
 					switch (trigger)
 					{
@@ -197,42 +210,10 @@
 						$('#feature').animate({opacity: '1'}, 500);
 						break;
 					}
-				}, 3000);
+				}, 2200);
 				
 			});
 		});
-	</script>
-	<script>
-	/*
-		// administrator related
-		$('#submitLogin').on('click', function(){
-			var userName = $('#userName').val();
-			var pw = $('#userPassword').val();
-			
-			var url = "https://flickering-torch-4928.firebaseIO.com";
-			var ref = new Firebase(url);
-			ref.authWithPassword({
-				email    : userName,
-				password : pw
-			}, function(error, authData) { 
-				if (error === null){
-					alert(authData.password.email.toString() + "login success");
-					$('#adminLogin').append(authData.password.email.toString());
-					$scope.$authData = authData;
-					$scope.isAdmin = true;
-				}
-				else
-					alert(error);
-			}, {
-				remember: "sessionOnly"
-			});
-			
-		});
-		
-		$('#adminLogoiut').on('click', function(){
-			ref.unauth();
-		});
-		*/
 	</script>
 	
 </body>

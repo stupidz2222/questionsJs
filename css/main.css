@@ -40,6 +40,7 @@
 }
 
 .container{
+	
 	width: 50%;
 	margin: 0 auto;
 }
@@ -62,7 +63,7 @@
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
 	width: 30%;
-	height: 150px;
+	height: 80px;
 	background-color: rgba(0, 0, 0, 0.8);
 	border-radius: 15px;
 	text-align: center;
@@ -72,5 +73,5 @@
 }
 #newNotification p
 {
-	line-height: 150px;
+	line-height: 80px;
 }

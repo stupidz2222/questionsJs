@@ -7,13 +7,14 @@
 * - exposes the model to the template and provides event handlers
 */
 todomvc.controller('TodoCtrl',
-['$scope', '$location', '$firebaseArray', '$sce', '$localStorage', '$window',
-function ($scope, $location, $firebaseArray, $sce, $localStorage, $window) {
+['$scope', '$location', '$firebaseArray', '$sce', '$localStorage', '$window', '$interval',
+function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $interval) {
 	// set local storage
 	$scope.$storage = $localStorage;
 	$scope.newNotification = false;
-	$scope.numberOfNewQuestions = 0;
+	$scope.newNotificationImage = "css/images/newMessage.png";
 	
+	var newMessageToggle;
 	var scrollCountDelta = 10;
 	$scope.maxQuestion = scrollCountDelta;
 
@@ -37,10 +38,29 @@ if (!roomId || roomId.length === 0) {
 
 var firebaseURL = "https://flickering-torch-4928.firebaseIO.com/";
 
+// room List
+$scope.roomList = [];
+var roomRef = new Firebase(firebaseURL);
+roomRef.on('value', function(data){
+	data.forEach(function(room){
+		$scope.roomList.push(room.key());
+	});
+});
 
 $scope.roomId = roomId;
+
+// private room
+/*
+var privateURL = firebaseURL + roomId;
+var privateRef = new Firebase(privateURL);
+alert(privateRef.child('password'));
+if (privateRef.password != null){
+	alert(privateRef.password);
+}
+*/
 var url = firebaseURL + roomId + "/questions/";
 var echoRef = new Firebase(url);
+
 
 var query = echoRef.orderByChild("order");
 // Should we limit?
@@ -82,8 +102,6 @@ $scope.$watchCollection('todos', function () {
 
 	// new questions notification
 	if ($scope.totalCount != "undefined" && $scope.totalCount != 0 && total > $scope.totalCount){
-		var noOfNewQuestions = total - $scope.totalCount;
-		$scope.numberOfNewQuestions = noOfNewQuestions;
 		//alert("There are " + $scope.numberOfNewQuestions + " new questions");
 		$scope.setNewNotification(true);
 	}
@@ -281,6 +299,7 @@ $scope.adminLogin = function(){
 				$scope.$authData = authData;
 				$scope.isAdmin = true;
 			});
+			angular.element(document.querySelector('#adminLogin')).css('display', 'none');
 		}
 		else
 			alert(error);
@@ -299,8 +318,21 @@ $scope.adminLogout = function(){
 
 $scope.setNewNotification = function(show){
 	$scope.newNotification = show;
-	if (!show)
-		$scope.toTop();
+	if (!show){
+		$interval.cancel(newMessageToggle);
+		$scope.newNotificationImage = "css/images/newMessage.png";
+	}
+	if (show){
+		newMessageToggle = $interval(function(){
+			if ($scope.newNotificationImage == "css/images/newMessage.png")
+				$scope.newNotificationImage = "css/images/newMessage2.png";
+			else
+				$scope.newNotificationImage = "css/images/newMessage.png";
+		}, 1000);
+	}
+}
+$scope.reloadRoute = function(){
+	$window.location.reload();
 }
 
 }]);

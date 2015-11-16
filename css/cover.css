@@ -50,18 +50,21 @@ html, body
 {
 	height: 250px;
 	overflow-y: scroll;
-	background-color: rgba(0, 0, 0, 0.7);
-	border-radius: 15px;
+	background-color: rgba(255, 255, 255, 0.8);
+	color: black;
 }
-#roomTable div
+#roomTableContent th
 {
-	border-bottom: solid 1px white;
-	text-align: left;
-	line-height: 35px;
+	text-align: center;
+	background-color: orange;
+}
+#roomTable tr:hover
+{
+	background-color: white;
 }
 #roomTable a
 {
-	color: white;
+	color: black;
 }
 #roomTable a:hover
 {
@@ -126,5 +129,10 @@ html, body
 	bottom: 5%;
 	right: 10%;
 	transform: translateX(-50%) translateY(-50%);
-	display: block;
+}
+#decoration
+{
+	position: absolute;
+	top: 10%;
+	right: 5%;
 }
