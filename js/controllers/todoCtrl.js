@@ -7,11 +7,14 @@
 * - exposes the model to the template and provides event handlers
 */
 todomvc.controller('TodoCtrl',
-['$scope', '$location', '$firebaseArray', '$sce', '$localStorage', '$window',
-function ($scope, $location, $firebaseArray, $sce, $localStorage, $window) {
+['$scope', '$location', '$firebaseArray', '$sce', '$localStorage', '$window', '$interval',
+function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $interval) {
 	// set local storage
 	$scope.$storage = $localStorage;
-
+	$scope.newNotification = false;
+	$scope.newNotificationImage = "css/images/newMessage.png";
+	
+	var newMessageToggle;
 	var scrollCountDelta = 10;
 	$scope.maxQuestion = scrollCountDelta;
 
@@ -35,10 +38,29 @@ if (!roomId || roomId.length === 0) {
 
 var firebaseURL = "https://flickering-torch-4928.firebaseIO.com/";
 
+// room List
+$scope.roomList = [];
+var roomRef = new Firebase(firebaseURL);
+roomRef.on('value', function(data){
+	data.forEach(function(room){
+		$scope.roomList.push(room.key());
+	});
+});
 
 $scope.roomId = roomId;
+
+// private room
+/*
+var privateURL = firebaseURL + roomId;
+var privateRef = new Firebase(privateURL);
+alert(privateRef.child('password'));
+if (privateRef.password != null){
+	alert(privateRef.password);
+}
+*/
 var url = firebaseURL + roomId + "/questions/";
 var echoRef = new Firebase(url);
+
 
 var query = echoRef.orderByChild("order");
 // Should we limit?
@@ -47,6 +69,15 @@ $scope.todos = $firebaseArray(query);
 
 //$scope.input.wholeMsg = '';
 $scope.editedTodo = null;
+
+// check administrator login state
+if ($scope.$storage.authData != null){
+	alert($scope.$storage.authData.password.email);
+	//$scope.$apply(function(){
+		$scope.$authData = $scope.$storage.authData;
+		$scope.isAdmin = true;
+	//});
+}
 
 // pre-precessing for collection
 $scope.$watchCollection('todos', function () {
@@ -62,14 +93,19 @@ $scope.$watchCollection('todos', function () {
 		if (todo.completed === false) {
 			remaining++;
 		}
-
 		// set time
-		todo.dateString = new Date(todo.timestamp).toString();
+		//todo.dateString = new Date(todo.timestamp).toString();
+		//$scope.$storage[todo.$id] = "";
 		todo.tags = todo.wholeMsg.match(/#\w+/g);
-
-		todo.trustedDesc = $sce.trustAsHtml(todo.linkedDesc);
+		//todo.trustedDesc = $sce.trustAsHtml(todo.linkedDesc);
 	});
 
+	// new questions notification
+	if ($scope.totalCount != "undefined" && $scope.totalCount != 0 && total > $scope.totalCount){
+		//alert("There are " + $scope.numberOfNewQuestions + " new questions");
+		$scope.setNewNotification(true);
+	}
+	
 	$scope.totalCount = total;
 	$scope.remainingCount = remaining;
 	$scope.completedCount = total - remaining;
@@ -116,10 +152,11 @@ $scope.addTodo = function () {
 		head: head,
 		headLastChar: head.slice(-1),
 		desc: desc,
-		linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
+		//linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
+		newQuestion: true,
 		completed: false,
 		timestamp: new Date().getTime(),
-		tags: "...",
+		//tags: "...",
 		echo: 0,
 		order: 0
 	});
@@ -135,6 +172,18 @@ $scope.editTodo = function (todo) {
 $scope.addEcho = function (todo) {
 	$scope.editedTodo = todo;
 	todo.echo = todo.echo + 1;
+	// Hack to order using this order.
+	todo.order = todo.order -1;
+	$scope.todos.$save(todo);
+
+	// Disable the button
+	$scope.$storage[todo.$id] = "echoed";
+};
+
+// Dislike function
+$scope.subtractEcho = function (todo) {
+	$scope.editedTodo = todo;
+	todo.echo = todo.echo - 1;			// modified
 	// Hack to order using this order.
 	todo.order = todo.order -1;
 	$scope.todos.$save(todo);
@@ -234,5 +283,56 @@ angular.element($window).bind("scroll", function() {
 		$scope.$apply();
 	}
 });
+
+$scope.adminLogin = function(){
+	//var ref = new Firebase(firebaseURL);
+		
+	echoRef.authWithPassword({
+		email    : $scope.userName.trim(),
+		password : $scope.userPassword.trim()
+	}, function(error, authData) { 
+		if (error === null){
+			alert(authData.password.email.toString() + "login success");
+			//$('#adminLogin').append(authData.password.email.toString());
+			$scope.$apply(function(){
+				$scope.$storage.authData = authData;
+				$scope.$authData = authData;
+				$scope.isAdmin = true;
+			});
+			angular.element(document.querySelector('#adminLogin')).css('display', 'none');
+		}
+		else
+			alert(error);
+	}, {
+		remember: "sessionOnly"
+	});
+}
+	
+$scope.adminLogout = function(){
+		
+	//var ref = new Firebase(firebaseURL);
+	echoRef.unauth();
+	delete $scope.$storage.authData;
+	$scope.isAdmin = false;
+}
+
+$scope.setNewNotification = function(show){
+	$scope.newNotification = show;
+	if (!show){
+		$interval.cancel(newMessageToggle);
+		$scope.newNotificationImage = "css/images/newMessage.png";
+	}
+	if (show){
+		newMessageToggle = $interval(function(){
+			if ($scope.newNotificationImage == "css/images/newMessage.png")
+				$scope.newNotificationImage = "css/images/newMessage2.png";
+			else
+				$scope.newNotificationImage = "css/images/newMessage.png";
+		}, 1000);
+	}
+}
+$scope.reloadRoute = function(){
+	$window.location.reload();
+}
 
 }]);
