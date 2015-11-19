@@ -19,10 +19,17 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
 	<!-- need this for comlted ones. TODO: can I do this in bootstrap -->
-	<link rel="stylesheet" href="main.css">
+	<link rel="stylesheet" href="css/main.css">
 
 </head>
 <body ng-controller="TodoCtrl">
+
+	<div id="banner">
+		<div style="width:70%;margin:0 auto;">
+			<img src="css/images/logo2.png" height="60px" />
+		</div>
+	</div>
+	<div class="container">
 	<font size="10">Questions for {{roomId}}?</font>&nbsp;
 
 	<!--
@@ -33,16 +40,11 @@
 	<a ng-class="{selected: location.path() == '/about'}" class="btn btn-warning" href="#/about">About</a>
 -->
 
-<small>Share room url: {{absurl}}</small> &nbsp;
-<a class="btn btn-default" href="/index.html">Main</a>
+<a class="btn btn-default" href="index.html">Main</a>
 <!--
 <button ng-hide="$authData" class="btn btn-primary left" type="button" ng-click="FBLogin()">Want Admin? Sign in with Facebook</button>
 -->
 <!-- after login -->
-<img ng-show="$authData" src="https://graph.facebook.com/{{$authData.facebook.id}}/picture/?type=square&return_ssl_resources=1" alt="{{name}}" />
-{{$authData.facebook.displayName}}
-<button ng-show="$authData" class="btn btn-primary left" type="button" ng-click="FBLogout()">Logout</button>
-
 <label for="order"> Select order: </label>
 
 <select name="orderby" ng-model="predicate">
@@ -74,14 +76,14 @@ ng-model="input.wholeMsg" autofocus></textarea>
 <div class="list-group" id="todo-list">
 	<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
 		<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
-			<span class="label label-danger" ng-show="todo.new">New</span>
+			<span class="label label-danger" ng-show="todo.newQuestion">New</span>
 			<span class="badge">{{todo.echo}}</span>
 			<!-- switch -->
 			<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
 			<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
 			<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
 		</h4>
-		<p class="list-group-item-text"><span ng-bind-html="todo.trustedDesc"></span> created: {{todo.timestamp | timeago}}
+		<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>--> created: {{todo.timestamp | timeago}}
 			<span ng-show="todo.tags">tags: {{todo.tags}}</span></p>
 
 			<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]">Like <span class="glyphicon glyphicon-thumbs-up"></span></button> &nbsp &nbsp
@@ -100,8 +102,27 @@ ng-model="input.wholeMsg" autofocus></textarea>
 	class="pull-right btn btn-default glyphicon glyphicon-arrow-down"
 	type="button" ng-click="increaseMax()"> Show more</button>
 -->
-
-
+	</div>
+	<!-- Administrator login panel -->
+	<div id="adminLogin">
+		<div ng-show="!isAdmin">
+			<label for="userName">User Name : </label><input type="text" id="userName" ng-model="userName" />
+			<label for="userPassword">Password : </label><input type="password" id="userPassword" ng-model="userPassword" />
+			<input type="submit" value="Login" id="submitLogin" ng-click="adminLogin()" />
+			<span>{{ $authData.password.email }}</span>
+		</div>
+		<div ng-show="isAdmin">
+			<span>{{ $authData.password.email }}</span>
+			<input type="submit" value="Logout" id="adminLogoiut" ng-click="adminLogout()" />
+		</div>
+	</div>
+	
+	<!-- Notification of new questions panel -->
+	
+	<div ng-show="newNotification" id="newNotification">
+		<span ng-click="setNewNotification(false)"><p> {{ numberOfNewQuestions }} new questions incoming...</p></span>
+	</div>
+	
 
 <!-- Autolink from https://github.com/gregjacobs/Autolinker.js> -->
 <script src="js/lib/Autolinker.min.js"></script>
