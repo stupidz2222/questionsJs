@@ -122,7 +122,7 @@
 		<div class="rightPanel">
 			<div class="list-group" id="todo-list">
 				<!-- Fix post: order == 1-->
-				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
+				<span class="fix-list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
 						ng-class="{completed: todo.completed, editing: todo == editedTodo}"
 						ng-show="!roomPasswordProtected"
 						ng-if="todo.order == 1">
