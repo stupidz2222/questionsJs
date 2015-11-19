@@ -83,7 +83,7 @@ html, body
 }
 .input-group textarea
 {
-	height: 35px;
+	height: 38px;
 }
 .navItem img
 {
@@ -111,6 +111,18 @@ html, body
 .roomItem a
 {
 	color: white;
+}
+
+.emojiBtn
+{
+	width: 25px;
+	height: 25px;
+	float: left;
+	margin: 5px 5px;
+}
+.emojiBtn:hover
+{
+	opacity: 0.7;
 }
 #new-todo
 {
@@ -158,7 +170,7 @@ html, body
 	background: url('images/ask.png') no-repeat;
 	background-position: center;
 	background-size: cover;
-	width: 35px;
+	width: 38px;
 }
 #ask:hover
 {
@@ -210,6 +222,18 @@ html, body
 	z-index: 1000;
 	margin: 0;
 }
+#privateRoomPassword
+{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, 0.8);
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1001;
+	margin: 0;
+	color: white;
+}
 #adminLoginPanel
 {
 	position: absolute;
@@ -221,6 +245,42 @@ html, body
 	border-radius: 20px;
 	padding: 20px 20px;
 	text-align: left;
+}
+#privateRoomPasswordPanel
+{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	width: 30%;
+	background-color: rgba(0, 0, 0, 0.8);
+	border-radius: 20px;
+	padding: 20px 20px;
+	text-align: left;
+}
+#emojiPanel
+{
+	display: none;
+	background-color: grey;
+	width: 160px;
+	height: 160px;
+	position: absolute;
+	top: -167px;
+	right: 40px;
+	overflow-y: scroll;
+}
+#emojiPopup
+{
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	right: 45px;
+	top: 8px;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAABACAYAAAB7jnWuAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYxJREFUeNrsWKFuwzAQTdupJDy8wxkZChkqGgkPL89XbKgkvF8xXl400pKShWwk3Hzn6SpZlu2c3XSTpvekp9QX+/wcX87pZRkAAH+MWeK4ilgS7w3bB/FEPNxSgJ54QywCfQbiTiokRkBLXEf03xO7sU4LoTO96ufIp6W3Jye+hzrNBY4eiLVlU56+tr3m8VcJaK223t/GYW/ZvhsZHyVg5Qi4N772HPUZX3vr/gUF+0kSUDlsjSGu5N+lMUkj9PODu4Qc0Hgm6VISyjz7HRRTClDGftvoORG5klOSANdAneFePP21/TilAJezNSeYV8PxwO3cky2P16RiVwpW/L7vLWEbFiFOyTNhAHUOx2Y8rAL329AWLIRB90V8ctxbssClZ+yWeJ7iMPrklT4GJrNFbyVHcuz3QM77XAUe+YHjQ93yi+hySpZG+xSKdgAAAABAfQD1AdQHUB9AfQD1AdQH/m19oHbkh6j6gCQIh8AKCuNfc+Z5NYepTsOKV5MLKiSKJ0d9AACAUXwLMAAao3x5Lx1DVwAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat;
+    background-position: center -6px;
+	
+    cursor: pointer;
 }
 /* from http://geryit.com/blog/pure-css3-custom-scrollbars/ */
 ::-webkit-scrollbar {

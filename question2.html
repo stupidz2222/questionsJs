@@ -22,7 +22,9 @@
 	<link rel="stylesheet" href="css/main2.css">
 	<!-- from http://tympanus.net/codrops/2011/10/24/creative-css3-animation-menus/ -->
 	<link rel="stylesheet" href="css/ca-menu.css">
-
+	
+	<!-- from LevchenkoD Github -->
+	<!--<link rel="stylesheet" href="css/twemoji.input.css">-->
 </head>
 <body ng-controller="TodoCtrl">
 	<div id="adminBtn">
@@ -35,6 +37,7 @@
 			<input class="btn btn-default" value="Logout" id="adminLogoutBtn" ng-click="adminLogout()" />
 		</div>
 	</div>
+	<!-- Administrator Login -->
 	<div id="adminLogin">
 		<div id="adminLoginPanel">
 			<div align="center">
@@ -45,9 +48,27 @@
 				<label for="userName">User Name : </label><input class="form-control" type="text" id="userName" ng-model="userName" />
 				<br />
 				<label for="userPassword">Password : </label><input class="form-control" type="password" id="userPassword" ng-model="userPassword" />
+				<span style="font-size:16px;font-weight:bold;color:red" ng-show="incorrectAdminInfo">Login information incorrect!</span>
 				<div align="center" style="margin-top:20px;">
 					<input class="btn btn-default" type="submit" value="Login" id="submitLogin" ng-click="adminLogin()" />
 					<input class="btn btn-default" type="button" value="Cancel" id="cancelLogin" />
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	<!-- Private room login -->
+	<div id="privateRoomPassword" ng-show="roomPasswordProtected">
+		<div id="privateRoomPasswordPanel">
+			<div align="center">
+				<img src="css/images/logo4.png" width="30%" />
+			</div>
+			<fieldset>
+				<legend style="color:white">Private Room Login</legend>
+				<label for="roomPassword">Password : </label><input class="form-control" type="password" id="roomPassword" ng-model="roomPasswordInput" />
+				<span style="font-size:16px;font-weight:bold;color:red" ng-show="incorrectRoomPassword">Password incorrect!</span>
+				<div align="center" style="margin-top:20px;">
+					<input class="btn btn-default" type="submit" value="Login" id="submitLogin" ng-click="privateRoomLogin()" />
+					<input class="btn btn-default" type="button" value="Cancel" ng-click="backRoute()" />
 				</div>
 			</fieldset>
 		</div>
@@ -100,13 +121,15 @@
 		</div>
 		<div class="rightPanel">
 			<div class="list-group" id="todo-list">			
-				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
+				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}" ng-show="!roomPasswordProtected">
 					<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
 						<span class="label label-danger" ng-show="todo.newQuestion">New</span>
 						<!--<span class="badge">{{todo.echo}}</span>-->
 						<!-- switch -->
+						<!--
 						<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
 						<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
+						-->
 						<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
 						<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
 					</h4>
@@ -139,10 +162,14 @@
 					-->
 				</div>
 				<div class="input-group">
-					<textarea type="text" id="new-todo" 
-					placeholder="Search or Post Question"
-					ng-model="input.wholeMsg" autofocus></textarea>
+					<textarea type="text" id="new-todo"
+					placeholder="Search or Post Question" 
+					ng-model="input.wholeMsg" 
+					contenteditable="true" 
+					autofocus></textarea>
 					<span ng-click="addTodo()" id="ask" class="input-group-btn"></span>
+					<div id="emojiPopup"></div>
+					<div id="emojiPanel"></div>
 				</div>
 			</div>
 		</div>
@@ -172,7 +199,12 @@
 <script src="js/lib/jquery.min.js"></script>
 <script src="http://twemoji.maxcdn.com/twemoji.min.js"></script>
 <script>
+	//new TwemojiInput(document.querySelector('textarea'));
+</script>
+<script>
 	$(function(){
+		var Emoji = ["🌒","🌓","🌔","🌕","🌖","🌗","🌘","🌙","🌚","🌛","🌜","🌝","🌞","🌟","🌠","🌰","🌱","🌲","🌳","🌴","🌵","🌷","🌸","🌹","🌺","🌻","🌼","🌽","🌾","🌿","🍀","🍁","🍂","🍃","🍄","🍅","🍆","🍇","🍈","🍉","🍊","🍋","🍌","🍍","🍎","🍏","🍐","🍑","🍒","🍓","🍔","🍕","🍖","🍗","🍘","🍙","🍚","🍛","🍜","🍝","🍞","🍟","🍠","🍡","🍢","🍣","🍤","🍥","🍦","🍧","🍨","🍩","🍪","🍫","🍬","🍭","🍮","🍯","🍰","🍱","🍲","🍳","🍴","🍵","🍶","🍷","🍸","🍹","🍺","🍻","🍼","🎀","🎁","🎂","🎃","🎄","🎅","🎆","🎇","🎈","🎉","🎊","🎋","🎌","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎠","🎡","🎢","🎣","🎤","🎥","🎦","🎧","🎨","🎩","🎪","🎫","🎬","🎭","🎮","🎯","🎰","🎱","🎲","🎳","🎴","🎵","🎶","🎷","🎸","🎹","🎺","🎻","🎼","🎽","🎾","🎿","🏀","🏁","🏂","🏃","🏄","🏆","🏇","🏈","🏉","🏊","🏠","🏡","🏢","🏣","🏤","🏥","🏦","🏧","🏨","🏩","🏪","🏫","🏬","🏭","🏮","🏯","🏰","🐀","🐁","🐂","🐃","🐄","🐅","🐆","🐇","🐈","🐉","🐊","🐋","🐌","🐍","🐎","🐏","🐐","🐑","🐒","🐓","🐔","🐕","🐖","🐗","🐘","🐙","🐚","🐛","🐜","🐝","🐞","🐟","🐠","🐡","🐢","🐣","🐤","🐥","🐦","🐧","🐨","🐩","🐪","🐫","🐬","🐭","🐮","🐯","🐰","🐱","🐲","🐳","🐴","🐵","🐶","🐷","🐸","🐹","🐺","🐻","🐼","🐽","🐾","👀","👂","👃","👄","👅","👆","👇","👈","👉","👊","👋","👌","👍","👎","👏","👐","👑","👒","👓","👔","👕","👖","👗","👘","👙","👚","👛","👜","👝","👞","👟","👠","👡","👢","👣","👤","👥","👦","👧","👨","👩","👪","👫","👬","👭","👮","👯","👰","👱","👲","👳","👴","👵","👶","👷","👸","👹","👺","👻","👼","👽","👾","👿","💀","💁","💂","💃","💄","💅","💆","💇","💈","💉","💊","💋","💌","💍","💎","💏","💐","💑","💒","💓","💔","💕","💖","💗","💘","💙","💚","💛","💜","💝","💞","💟","💠","💡","💢","💣","💤","💥","💦","💧","💨","💩","💪","💫","💬","💭","💮","💯","💰","💱","💲","💳","💴","💵","💶","💷","💸","💹","💺","💻","💼","💽","💾","💿","📀","📁","📂","📃","📄","📅","📆","📇","📈","📉","📊","📋","📌","📍","📎","📏","📐","📑","📒","📓","📔","📕","📖","📗","📘","📙","📚","📛","📜","📝","📞","📟","📠","📡","📢","📣","📤","📥","📦","📧","📨","📩","📪","📫","📬","📭","📮","📯","📰","📱","📲","📳","📴","📵","📶","📷","📹","📺","📻","📼","🔀","🔁","🔂","🔃","🔄","🔅","🔆","🔇","🔈","🔉","🔊","🔋","🔌","🔍","🔎","🔏","🔐","🔑","🔒","🔓","🔔","🔕","🔖","🔗","🔘","🔙","🔚","🔛","🔜","🔝","🔞","🔟","🔠","🔡","🔢","🔣","🔤","🔥","🔦","🔧","🔨","🔩","🔪","🔫","🔬","🔭","🔮","🔯","🔰","🔱","🔲","🔳","🔴","🔵","🔶","🔷","🔸","🔹","🔺","🔻","🔼","🔽","🕐","🕑","🕒","🕓","🕔","🕕","🕖","🕗","🕘","🕙","🕚","🕛","🕜","🕝","🕞","🕟","🕠","🕡","🕢","🕣","🕤","🕥","🕦","🕧","🗻","🗼","🗽","🗾","🗿","😀","😁","😂","😃","😄","😅","😆","😇","😈","😉","😊","😋","😌","😍","😎","😏","😐","😑","😒","😓","😔","😕","😖","😗","😘","😙","😚","😛","😜","😝","😞","😟","😠","😡","😢","😣","😤","😥","😦","😧","😨","😩","😪","😫","😬","😭","😮","😯","😰","😱","😲","😳","😴","😵","😶","😷","😸","😹","😺","😻","😼","😽","😾","😿","🙀","🙅","🙆","🙇","🙈","🙉","🙊","🙋","🙌","🙍","🙎","🙏","🚀","🚁","🚂","🚃","🚄","🚅","🚆","🚇","🚈","🚉","🚊","🚋","🚌","🚍","🚎","🚏","🚐","🚑","🚒","🚓","🚔","🚕","🚖","🚗","🚘","🚙","🚚","🚛","🚜","🚝","🚞","🚟","🚠","🚡","🚢","🚣","🚤","🚥","🚦","🚧","🚨","🚩","🚪","🚫","🚬","🚭","🚮","🚯","🚰","🚱","🚲","🚳","🚴","🚵","🚶","🚷","🚸","🚹","🚺","🚻","🚼","🚽","🚾","🚿","🛀","🛁","🛂","🛃","🛄","🛅","‼","⁉","™","ℹ","↔","↕","↖","↗","↘","↙","↩","↪","#⃣","⌚","⌛","⏩","⏪","⏫","⏬","⏰","⏳","Ⓜ","▪","▫","▶","◀","◻","◼","◽","◾","☀","☁","☎","☑","☔","☕","☝","☺","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","♠","♣","♥","♦","♨","♻","♿","⚓","⚠","⚡","⚪","⚫","⚽","⚾","⛄","⛅","⛎","⛔","⛪","⛲","⛳","⛵","⛺","⛽","✂","✅","✈","✉","✊","✋","✌","✏","✒","✔","✖","✨","✳","✴","❄","❇","❌","❎","❓","❔","❕","❗","❤","➕","➖","➗","➡","➰","➿","⤴","⤵","⬅","⬆","⬇","⬛","⬜","⭐","⭕","0⃣","〰","〽","1⃣","2⃣","㊗","㊙","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣","©","®",""];
+	
 		$('#newMessageBtn').on('click', function(){
 			$('.list-group').scrollTop(0);
 		});
@@ -191,15 +223,42 @@
 		});
 		$('#cancelLogin').on('click', function(){
 			$('#adminLogin').css('display', 'none');
+			$('#userPassword').val("");
 		});
-		/*
+		
+		// add emoji during initialization
 		$(window).on('load', function(){
-			setTimeout(function(){
-				twemoji.size = '72x72';
-				twemoji.parse(document.body);
-			}, 4000);
+			for (var i = 0 ; i < Emoji.length ; i++){
+				var element = "<div class='emojiBtn' id='" + Emoji[i] + "'>" + Emoji[i] + "</div>";
+				$('#emojiPanel').append(element);
+			}
 		});
-		*/
+		
+		// emoji input
+		$(document).on('click', '#emojiPanel img', function(){
+			var temp = $('#new-todo').val();
+			$('#new-todo').val(temp + this.alt);
+			
+			var appElement = document.querySelector('[ng-app=todomvc]');
+			var $scope = angular.element(appElement).scope();
+				
+				if ($scope.input == undefined){
+					$scope.input = {wholeMsg:""};
+					$scope.input.wholeMsg = "";
+				}
+				$scope.input.wholeMsg = temp + this.alt;
+			
+			$scope.$apply();
+		});
+		
+		// toggle emoji panel
+		$('#emojiPopup').on('click', function(){
+			if ($('#emojiPanel').css('display') == "block")
+				$('#emojiPanel').css('display', 'none');
+			else 
+				$('#emojiPanel').css('display', 'block');
+		});
+		
 	});
 </script>
 </body>
