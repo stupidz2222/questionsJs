@@ -22,7 +22,7 @@
 	<link rel="stylesheet" href="css/main2.css">
 	<!-- from http://tympanus.net/codrops/2011/10/24/creative-css3-animation-menus/ -->
 	<link rel="stylesheet" href="css/ca-menu.css">
-	
+
 	<!-- from LevchenkoD Github -->
 	<!--<link rel="stylesheet" href="css/twemoji.input.css">-->
 </head>
@@ -120,35 +120,72 @@
 			</div>
 		</div>
 		<div class="rightPanel">
-			<div class="list-group" id="todo-list">			
-				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}" ng-show="!roomPasswordProtected">
-					<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
-						<span class="label label-danger" ng-show="todo.newQuestion">New</span>
-						<!--<span class="badge">{{todo.echo}}</span>-->
-						<!-- switch -->
-						<!--
-						<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
-						<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
-						-->
-						<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
-						<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
-					</h4>
-					<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>--> 
-					
-					<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
-					
-					<div style="float:right">
-						{{todo.echo}}
-						<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
-						<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
-						<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
-						<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
-					</div>
-				</span>
+			<div class="list-group" id="todo-list">
+				<!-- Fix post: order == 1-->
+				<span class="fix-list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
+						ng-class="{completed: todo.completed, editing: todo == editedTodo}"
+						ng-show="!roomPasswordProtected"
+						ng-if="todo.order == 1">
+
+						<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
+							<span class="label label-danger" ng-show="todo.newQuestion">New</span>
+							<!--<span class="badge">{{todo.echo}}</span>-->
+							<!-- switch -->
+							<!--
+							<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
+							<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
+							-->
+							<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
+							<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
+						</h4>
+						<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>-->
+
+						<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
+
+						<div style="float:right">
+							{{todo.echo}}
+							<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
+							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
+							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
+						</div>
+
+				</span> <!-- end of Fix post -->
+
+				<!-- Non-fix post: order != 1-->
+				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
+						ng-class="{completed: todo.completed, editing: todo == editedTodo}"
+						ng-show="!roomPasswordProtected"
+						ng-if="todo.order != 1">
+
+						<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
+							<span class="label label-danger" ng-show="todo.newQuestion">New</span>
+							<!--<span class="badge">{{todo.echo}}</span>-->
+							<!-- switch -->
+							<!--
+							<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
+							<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
+							-->
+							<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
+							<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
+						</h4>
+						<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>-->
+
+						<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
+
+						<div style="float:right">
+							{{todo.echo}}
+							<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
+							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
+							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
+						</div>
+
+				</span> <!-- end of Non-fix post -->
 				<div id="newMessageBtn" ng-show="newNotification" ng-click="setNewNotification(false)">
 					You have new messages.
 				</div>
-			</div>
+			</div><!-- list-group -->
 			<div class="bottomBar">
 				<div class="functionList">
 					<!--<div id="newMessageBtn" ng-click="setNewNotification(false)">
@@ -169,10 +206,9 @@
 				</div>
 				<div class="input-group">
 					<textarea type="text" id="new-todo"
-					placeholder="Search or Post Question" 
-					ng-model="input.wholeMsg" 
-					ng-show="!roomPasswordProtected"
-					contenteditable="true" 
+					placeholder="Search or Post Question"
+					ng-model="input.wholeMsg"
+					contenteditable="true"
 					autofocus></textarea>
 					<span ng-click="addTodo()" id="ask" class="input-group-btn"></span>
 					<div id="emojiPopup"></div>
@@ -182,8 +218,8 @@
 		</div>
 	</div>
 
-	
-	
+
+
 
 <!-- Autolink from https://github.com/gregjacobs/Autolinker.js> -->
 <script src="js/lib/Autolinker.min.js"></script>
@@ -211,11 +247,11 @@
 <script>
 	$(function(){
 		var Emoji = ["🌒","🌓","🌔","🌕","🌖","🌗","🌘","🌙","🌚","🌛","🌜","🌝","🌞","🌟","🌠","🌰","🌱","🌲","🌳","🌴","🌵","🌷","🌸","🌹","🌺","🌻","🌼","🌽","🌾","🌿","🍀","🍁","🍂","🍃","🍄","🍅","🍆","🍇","🍈","🍉","🍊","🍋","🍌","🍍","🍎","🍏","🍐","🍑","🍒","🍓","🍔","🍕","🍖","🍗","🍘","🍙","🍚","🍛","🍜","🍝","🍞","🍟","🍠","🍡","🍢","🍣","🍤","🍥","🍦","🍧","🍨","🍩","🍪","🍫","🍬","🍭","🍮","🍯","🍰","🍱","🍲","🍳","🍴","🍵","🍶","🍷","🍸","🍹","🍺","🍻","🍼","🎀","🎁","🎂","🎃","🎄","🎅","🎆","🎇","🎈","🎉","🎊","🎋","🎌","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎠","🎡","🎢","🎣","🎤","🎥","🎦","🎧","🎨","🎩","🎪","🎫","🎬","🎭","🎮","🎯","🎰","🎱","🎲","🎳","🎴","🎵","🎶","🎷","🎸","🎹","🎺","🎻","🎼","🎽","🎾","🎿","🏀","🏁","🏂","🏃","🏄","🏆","🏇","🏈","🏉","🏊","🏠","🏡","🏢","🏣","🏤","🏥","🏦","🏧","🏨","🏩","🏪","🏫","🏬","🏭","🏮","🏯","🏰","🐀","🐁","🐂","🐃","🐄","🐅","🐆","🐇","🐈","🐉","🐊","🐋","🐌","🐍","🐎","🐏","🐐","🐑","🐒","🐓","🐔","🐕","🐖","🐗","🐘","🐙","🐚","🐛","🐜","🐝","🐞","🐟","🐠","🐡","🐢","🐣","🐤","🐥","🐦","🐧","🐨","🐩","🐪","🐫","🐬","🐭","🐮","🐯","🐰","🐱","🐲","🐳","🐴","🐵","🐶","🐷","🐸","🐹","🐺","🐻","🐼","🐽","🐾","👀","👂","👃","👄","👅","👆","👇","👈","👉","👊","👋","👌","👍","👎","👏","👐","👑","👒","👓","👔","👕","👖","👗","👘","👙","👚","👛","👜","👝","👞","👟","👠","👡","👢","👣","👤","👥","👦","👧","👨","👩","👪","👫","👬","👭","👮","👯","👰","👱","👲","👳","👴","👵","👶","👷","👸","👹","👺","👻","👼","👽","👾","👿","💀","💁","💂","💃","💄","💅","💆","💇","💈","💉","💊","💋","💌","💍","💎","💏","💐","💑","💒","💓","💔","💕","💖","💗","💘","💙","💚","💛","💜","💝","💞","💟","💠","💡","💢","💣","💤","💥","💦","💧","💨","💩","💪","💫","💬","💭","💮","💯","💰","💱","💲","💳","💴","💵","💶","💷","💸","💹","💺","💻","💼","💽","💾","💿","📀","📁","📂","📃","📄","📅","📆","📇","📈","📉","📊","📋","📌","📍","📎","📏","📐","📑","📒","📓","📔","📕","📖","📗","📘","📙","📚","📛","📜","📝","📞","📟","📠","📡","📢","📣","📤","📥","📦","📧","📨","📩","📪","📫","📬","📭","📮","📯","📰","📱","📲","📳","📴","📵","📶","📷","📹","📺","📻","📼","🔀","🔁","🔂","🔃","🔄","🔅","🔆","🔇","🔈","🔉","🔊","🔋","🔌","🔍","🔎","🔏","🔐","🔑","🔒","🔓","🔔","🔕","🔖","🔗","🔘","🔙","🔚","🔛","🔜","🔝","🔞","🔟","🔠","🔡","🔢","🔣","🔤","🔥","🔦","🔧","🔨","🔩","🔪","🔫","🔬","🔭","🔮","🔯","🔰","🔱","🔲","🔳","🔴","🔵","🔶","🔷","🔸","🔹","🔺","🔻","🔼","🔽","🕐","🕑","🕒","🕓","🕔","🕕","🕖","🕗","🕘","🕙","🕚","🕛","🕜","🕝","🕞","🕟","🕠","🕡","🕢","🕣","🕤","🕥","🕦","🕧","🗻","🗼","🗽","🗾","🗿","😀","😁","😂","😃","😄","😅","😆","😇","😈","😉","😊","😋","😌","😍","😎","😏","😐","😑","😒","😓","😔","😕","😖","😗","😘","😙","😚","😛","😜","😝","😞","😟","😠","😡","😢","😣","😤","😥","😦","😧","😨","😩","😪","😫","😬","😭","😮","😯","😰","😱","😲","😳","😴","😵","😶","😷","😸","😹","😺","😻","😼","😽","😾","😿","🙀","🙅","🙆","🙇","🙈","🙉","🙊","🙋","🙌","🙍","🙎","🙏","🚀","🚁","🚂","🚃","🚄","🚅","🚆","🚇","🚈","🚉","🚊","🚋","🚌","🚍","🚎","🚏","🚐","🚑","🚒","🚓","🚔","🚕","🚖","🚗","🚘","🚙","🚚","🚛","🚜","🚝","🚞","🚟","🚠","🚡","🚢","🚣","🚤","🚥","🚦","🚧","🚨","🚩","🚪","🚫","🚬","🚭","🚮","🚯","🚰","🚱","🚲","🚳","🚴","🚵","🚶","🚷","🚸","🚹","🚺","🚻","🚼","🚽","🚾","🚿","🛀","🛁","🛂","🛃","🛄","🛅","‼","⁉","™","ℹ","↔","↕","↖","↗","↘","↙","↩","↪","#⃣","⌚","⌛","⏩","⏪","⏫","⏬","⏰","⏳","Ⓜ","▪","▫","▶","◀","◻","◼","◽","◾","☀","☁","☎","☑","☔","☕","☝","☺","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","♠","♣","♥","♦","♨","♻","♿","⚓","⚠","⚡","⚪","⚫","⚽","⚾","⛄","⛅","⛎","⛔","⛪","⛲","⛳","⛵","⛺","⛽","✂","✅","✈","✉","✊","✋","✌","✏","✒","✔","✖","✨","✳","✴","❄","❇","❌","❎","❓","❔","❕","❗","❤","➕","➖","➗","➡","➰","➿","⤴","⤵","⬅","⬆","⬇","⬛","⬜","⭐","⭕","0⃣","〰","〽","1⃣","2⃣","㊗","㊙","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣","©","®",""];
-	
+
 		$('#newMessageBtn').on('click', function(){
 			$('.list-group').scrollTop(0);
 		});
-		
+
 		$('.leftPanelMenuItem').on('click', function(){
 			var current = $('#menu-div-' + this.id).css('display');
 			$('.menu-div').css('display', 'none');
@@ -223,7 +259,7 @@
 				return;
 			$('#menu-div-' + this.id).css('display', 'block');
 		});
-		
+
 		// administrator panel
 		$('#adminLoginBtn').on('click', function(){
 			$('#adminLogin').css('display', 'block');
@@ -232,7 +268,7 @@
 			$('#adminLogin').css('display', 'none');
 			$('#userPassword').val("");
 		});
-		
+
 		// add emoji during initialization
 		$(window).on('load', function(){
 			for (var i = 0 ; i < Emoji.length ; i++){
@@ -240,32 +276,32 @@
 				$('#emojiPanel').append(element);
 			}
 		});
-		
+
 		// emoji input
 		$(document).on('click', '#emojiPanel img', function(){
 			var temp = $('#new-todo').val();
 			$('#new-todo').val(temp + this.alt);
-			
+
 			var appElement = document.querySelector('[ng-app=todomvc]');
 			var $scope = angular.element(appElement).scope();
-				
+
 				if ($scope.input == undefined){
 					$scope.input = {wholeMsg:""};
 					$scope.input.wholeMsg = "";
 				}
 				$scope.input.wholeMsg = temp + this.alt;
-			
+
 			$scope.$apply();
 		});
-		
+
 		// toggle emoji panel
 		$('#emojiPopup').on('click', function(){
 			if ($('#emojiPanel').css('display') == "block")
 				$('#emojiPanel').css('display', 'none');
-			else 
+			else
 				$('#emojiPanel').css('display', 'block');
 		});
-		
+
 	});
 </script>
 </body>

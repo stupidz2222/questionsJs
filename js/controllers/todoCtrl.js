@@ -17,7 +17,7 @@ function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $time
 	var scrollCountDelta = 100;
 	$scope.maxQuestion = scrollCountDelta;
 	$scope.incorrectAdminInfo = false;
-	
+
 	/*
 	$(window).scroll(function(){
 	if($(window).scrollTop() > 0) {
@@ -114,14 +114,14 @@ $scope.$watchCollection('todos', function () {
 		//alert("There are " + $scope.numberOfNewQuestions + " new questions");
 		$scope.setNewNotification(true);
 	}
-	
+
 	// emoji
 	$timeout(function(){
 		twemoji.size = '36x36';
 		twemoji.parse(document.querySelector('body'));
 	}, 0);
-	
-	
+
+
 	$scope.totalCount = total;
 	$scope.remainingCount = remaining;
 	$scope.completedCount = total - remaining;
@@ -154,7 +154,7 @@ $scope.getFirstAndRestSentence = function($string) {
 $scope.addTodo = function () {
 	//alert($scope.input.wholeMsg + " " + $scope.input.wholeMsg.length);
 	var newTodo = $scope.input.wholeMsg;
-	
+
 	// No input, so just do nothing
 	if (!newTodo.length) {
 		return;
@@ -209,7 +209,7 @@ $scope.subtractEcho = function (todo) {
 	$scope.editedTodo = todo;
 	todo.echo = todo.echo - 1;			// modified
 	// Hack to order using this order.
-	todo.order = todo.order -1;
+	// todo.order = todo.order -1;
 	$scope.todos.$save(todo);
 
 	// Disable the button
@@ -310,11 +310,11 @@ angular.element($window).bind("scroll", function() {
 
 $scope.adminLogin = function(){
 	//var ref = new Firebase(firebaseURL);
-		
+
 	echoRef.authWithPassword({
 		email    : $scope.userName.trim(),
 		password : $scope.userPassword.trim()
-	}, function(error, authData) { 
+	}, function(error, authData) {
 		if (error === null){
 			// alert(authData.password.email.toString() + "login success");
 			//$('#adminLogin').append(authData.password.email.toString());
@@ -337,9 +337,9 @@ $scope.adminLogin = function(){
 		remember: "sessionOnly"
 	});
 }
-	
+
 $scope.adminLogout = function(){
-		
+
 	//var ref = new Firebase(firebaseURL);
 	echoRef.unauth();
 	delete $scope.$storage.authData;
