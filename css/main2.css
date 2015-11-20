@@ -43,6 +43,18 @@ html, body
 	overflow-y: scroll;
 	margin: 0 0;
 }
+
+.fix-list-group-item
+{
+	background-color: #5D5E68;
+	color: white;
+	border: none;
+	border-bottom: 1px solid white;
+	display: block;
+	width: 100%;
+	margin: 5px auto;
+	padding: 30px 20px;
+}
 .list-group-item
 {
 	background-color: inherit;
@@ -149,9 +161,9 @@ html, body
 	text-transform: uppercase;
 	color: white;
 	text-align: center;
-	
+
 }
-#roomTitle a 
+#roomTitle a
 {
 	font-size: 35px;
 	color: white;
@@ -279,7 +291,7 @@ html, body
 	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAABACAYAAAB7jnWuAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYxJREFUeNrsWKFuwzAQTdupJDy8wxkZChkqGgkPL89XbKgkvF8xXl400pKShWwk3Hzn6SpZlu2c3XSTpvekp9QX+/wcX87pZRkAAH+MWeK4ilgS7w3bB/FEPNxSgJ54QywCfQbiTiokRkBLXEf03xO7sU4LoTO96ufIp6W3Jye+hzrNBY4eiLVlU56+tr3m8VcJaK223t/GYW/ZvhsZHyVg5Qi4N772HPUZX3vr/gUF+0kSUDlsjSGu5N+lMUkj9PODu4Qc0Hgm6VISyjz7HRRTClDGftvoORG5klOSANdAneFePP21/TilAJezNSeYV8PxwO3cky2P16RiVwpW/L7vLWEbFiFOyTNhAHUOx2Y8rAL329AWLIRB90V8ctxbssClZ+yWeJ7iMPrklT4GJrNFbyVHcuz3QM77XAUe+YHjQ93yi+hySpZG+xSKdgAAAABAfQD1AdQHUB9AfQD1AdQH/m19oHbkh6j6gCQIh8AKCuNfc+Z5NYepTsOKV5MLKiSKJ0d9AACAUXwLMAAao3x5Lx1DVwAAAABJRU5ErkJggg==');
     background-repeat: no-repeat;
     background-position: center -6px;
-	
+
     cursor: pointer;
 }
 /* from http://geryit.com/blog/pure-css3-custom-scrollbars/ */
