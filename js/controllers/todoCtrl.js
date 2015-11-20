@@ -12,7 +12,6 @@ function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $time
 	// set local storage
 	$scope.$storage = $localStorage;
 	$scope.newNotification = false;
-	$scope.newNotificationImage = "css/images/newMessage.png";
 	
 	var newMessageToggle;
 	var scrollCountDelta = 100;
@@ -55,7 +54,7 @@ var privateURL = firebaseURL + roomId;
 var privateRef = new Firebase(privateURL);
 $scope.roomPasswordProtected = false;
 privateRef.once('value', function(data){
-	if(data.child('password').val() != null){
+	if(data.child('password').val() != '' && data.child('password').val() != null){
 		$scope.roomPasswordProtected = true;
 		$scope.roomPassword = data.child('password').val();
 		$scope.incorrectRoomPassword = false;
@@ -63,11 +62,10 @@ privateRef.once('value', function(data){
 	}
 });
 /*
-if (privateRef.password != null){
-	alert(privateRef.password);
-}
+// check for new room and add password field
+var newRoomRef = new Firebase(firebaseURL + roomId);
+newRoomRef.child("password").set('');
 */
-
 var url = firebaseURL + roomId + "/questions/";
 var echoRef = new Firebase(url);
 
@@ -162,6 +160,12 @@ $scope.addTodo = function () {
 		return;
 	}
 
+	// password for newly created room
+	if ($scope.todos.length == 0){
+		var newRoomRef = new Firebase(firebaseURL + roomId);
+		newRoomRef.child("password").set('');
+	}
+	
 	var firstAndLast = $scope.getFirstAndRestSentence(newTodo);
 	var head = firstAndLast[0];
 	var desc = firstAndLast[1];
@@ -179,6 +183,7 @@ $scope.addTodo = function () {
 		echo: 0,
 		order: 0
 	});
+	
 	// remove the posted question in the input
 	$scope.input.wholeMsg = '';
 };
@@ -343,22 +348,8 @@ $scope.adminLogout = function(){
 
 $scope.setNewNotification = function(show){
 	$scope.newNotification = show;
-	if (!show){
-		$interval.cancel(newMessageToggle);
-		$scope.newNotificationImage = "css/images/newMessage.png";
-	}
-	if (show){
-		$interval.cancel(newMessageToggle);
-		newMessageToggle = $interval(function(){
-			if ($scope.newNotificationImage == "css/images/newMessage.png")
-				$scope.newNotificationImage = "css/images/newMessage2.png";
-			else
-				$scope.newNotificationImage = "css/images/newMessage.png";
-		}, 1000);
-	}
 }
 $scope.privateRoomLogin = function(){
-	alert($scope.roomPasswordInput);
 	if ($scope.roomPasswordInput != $scope.roomPassword){
 		$scope.incorrectRoomPassword = true;
 		$scope.roomPasswordInput = "";

@@ -145,10 +145,16 @@
 						<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
 					</div>
 				</span>
+				<div id="newMessageBtn" ng-show="newNotification" ng-click="setNewNotification(false)">
+					You have new messages.
+				</div>
 			</div>
 			<div class="bottomBar">
 				<div class="functionList">
-					<img id="newMessageBtn" ng-click="setNewNotification(false)" ng-src="{{newNotificationImage}}" width="35px" height="35px" />
+					<!--<div id="newMessageBtn" ng-click="setNewNotification(false)">
+						You have new messages.
+					</div>-->
+					<!--<img id="newMessageBtn" ng-click="setNewNotification(false)" ng-src="{{newNotificationImage}}" />-->
 					<!--
 					<label for="order"> Select order: </label>
 
@@ -165,6 +171,7 @@
 					<textarea type="text" id="new-todo"
 					placeholder="Search or Post Question" 
 					ng-model="input.wholeMsg" 
+					ng-show="!roomPasswordProtected"
 					contenteditable="true" 
 					autofocus></textarea>
 					<span ng-click="addTodo()" id="ask" class="input-group-btn"></span>
