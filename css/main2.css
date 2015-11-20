@@ -46,9 +46,10 @@ html, body
 
 .fix-list-group-item
 {
-	background-color: #f3b031;
+	background-color: #5D5E68;
 	color: white;
-	border: 4px solid #FFFFFF;
+	border: none;
+	border-bottom: 1px solid white;
 	display: block;
 	width: 100%;
 	margin: 5px auto;
