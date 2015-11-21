@@ -130,9 +130,3 @@ html, body
 	right: 10%;
 	transform: translateX(-50%) translateY(-50%);
 }
-#decoration
-{
-	position: absolute;
-	top: 10%;
-	right: 5%;
-}

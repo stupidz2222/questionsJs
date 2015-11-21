@@ -52,17 +52,17 @@
 				<div id="roomTable">
 					<table id="roomTableContent" width="100%">
 						<tr>
-							<th width="50%">Room Name</th>
-							<th width="25%">Room Type</th>
-							<th width="25%">Questions</th>
+							<th width="40%">Room Name</th>
+							<th width="30%">Type</th>
+							<th width="30%">Questions</th>
 						</tr>
 					</table>
 				</div>
 			</div>
 			<div class="content" id="feature">
-				<div>
+				<!--<div>
 					<img src="css/images/info.png" width="100%" />
-				</div>
+				</div>-->
 			</div>
 			
 		</div>
@@ -86,9 +86,6 @@
 	</div>
 	<div id="eraser">
 		<img src="css/images/eraser.png" width="120px" height="120px" />
-	</div>
-	<div id="decoration">
-		<img src="css/images/decoration1.png" width="300px" />
 	</div>
 	
 	
@@ -140,7 +137,8 @@
 						element.innerHTML = '<td><img src="css/images/hotIcon.png" width=\"30px\" /><a href="question2.html#/'+room.key()+'">'+room.key()+'</a></td>';
 					else
 						element.innerHTML = '<td><a href="question2.html#/'+room.key()+'">'+room.key()+'</a></td>';
-					element.innerHTML += '<td>' + '<img src=\"css/images/unlockRoom.png\" height=\"30px\">' + '</td>';
+					var image = (room.child('password').val()!=null&&room.child('password').val()!=''?'<img src=\"css/images/lockRoom.png\" height=\"30px\">':'<img src=\"css/images/unlockRoom.png\" height=\"30px\">');
+					element.innerHTML += '<td>' + image + '</td>';
 					element.innerHTML += "<td>" + room.child('questions').numChildren() + "</td>";
 					table.appendChild(element);
 					i++;
