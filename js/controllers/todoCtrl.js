@@ -58,14 +58,19 @@ if (privateRef.password != null){
 	alert(privateRef.password);
 }
 */
+/* setting up $scope.todos */
 var url = firebaseURL + roomId + "/questions/";
 var echoRef = new Firebase(url);
-
-
 var query = echoRef.orderByChild("order");
 // Should we limit?
 //.limitToFirst(1000);
 $scope.todos = $firebaseArray(query);
+
+/* setting up $scope.replies */
+var replyUrl = firebaseURL + roomId + "/replies/";
+var replyEchoRef = new Firebase(replyUrl);
+var replyQuery = replyEchoRef.orderByChild("order");
+$scope.replies = $firebaseArray(replyQuery);
 
 //$scope.input.wholeMsg = '';
 $scope.editedTodo = null;
@@ -334,5 +339,39 @@ $scope.setNewNotification = function(show){
 $scope.reloadRoute = function(){
 	$window.location.reload();
 }
+
+$scope.addReply = function (todo) {
+	var newReply = $scope.replyMessage.wholeMsg.trim();
+	// No input, so just do nothing
+	if (!newReply.length) {
+		return;
+	}
+	// setting the path to the reply directory
+	var questionId = todo.$id;
+	var url = replyUrl + questionId;
+	var echoRef = new Firebase(url);
+	var query = echoRef.orderByChild("order");
+	$scope.reply = $firebaseArray(query);
+	
+	//todo.replyCount = todo.child('replies').numChildren();
+	
+	$scope.reply.$add({
+		wholeMsg: newReply,
+		head: '',
+		headLastChar: '',
+		desc: '',
+		//linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
+		newQuestion: true,
+		completed: false,
+		timestamp: new Date().getTime(),
+		//tags: "...",
+		echo: 0,
+		order: 0
+	});
+	// remove the posted question in the input
+	$scope.replyMessage.wholeMsg = '';
+};
+
+
 
 }]);
