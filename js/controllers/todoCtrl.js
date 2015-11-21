@@ -7,16 +7,16 @@
 * - exposes the model to the template and provides event handlers
 */
 todomvc.controller('TodoCtrl',
-['$scope', '$location', '$firebaseArray', '$sce', '$localStorage', '$window', '$interval',
-function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $interval) {
+['$scope', '$location', '$firebaseArray', '$sce', '$localStorage', '$window', '$timeout', '$interval',
+function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $timeout, $interval) {
 	// set local storage
 	$scope.$storage = $localStorage;
 	$scope.newNotification = false;
-	$scope.newNotificationImage = "css/images/newMessage.png";
 	
 	var newMessageToggle;
-	var scrollCountDelta = 10;
+	var scrollCountDelta = 100;
 	$scope.maxQuestion = scrollCountDelta;
+	$scope.incorrectAdminInfo = false;
 
 	/*
 	$(window).scroll(function(){
@@ -50,13 +50,21 @@ roomRef.on('value', function(data){
 $scope.roomId = roomId;
 
 // private room
-/*
 var privateURL = firebaseURL + roomId;
 var privateRef = new Firebase(privateURL);
-alert(privateRef.child('password'));
-if (privateRef.password != null){
-	alert(privateRef.password);
-}
+$scope.roomPasswordProtected = false;
+privateRef.once('value', function(data){
+	if(data.child('password').val() != '' && data.child('password').val() != null){
+		$scope.roomPasswordProtected = true;
+		$scope.roomPassword = data.child('password').val();
+		$scope.incorrectRoomPassword = false;
+		//alert("password required");
+	}
+});
+/*
+// check for new room and add password field
+var newRoomRef = new Firebase(firebaseURL + roomId);
+newRoomRef.child("password").set('');
 */
 /* setting up $scope.todos */
 var url = firebaseURL + roomId + "/questions/";
@@ -66,18 +74,22 @@ var query = echoRef.orderByChild("order");
 //.limitToFirst(1000);
 $scope.todos = $firebaseArray(query);
 
+<<<<<<< HEAD
 /* setting up $scope.replies */
 var replyUrl = firebaseURL + roomId + "/replies/";
 var replyEchoRef = new Firebase(replyUrl);
 var replyQuery = replyEchoRef.orderByChild("order");
 $scope.replies = $firebaseArray(replyQuery);
 
+=======
+//$scope.input = {};
+>>>>>>> refs/remotes/UST-Comp3111/gh-pages
 //$scope.input.wholeMsg = '';
 $scope.editedTodo = null;
 
 // check administrator login state
 if ($scope.$storage.authData != null){
-	alert($scope.$storage.authData.password.email);
+	//alert($scope.$storage.authData.password.email);
 	//$scope.$apply(function(){
 		$scope.$authData = $scope.$storage.authData;
 		$scope.isAdmin = true;
@@ -110,7 +122,14 @@ $scope.$watchCollection('todos', function () {
 		//alert("There are " + $scope.numberOfNewQuestions + " new questions");
 		$scope.setNewNotification(true);
 	}
-	
+
+	// emoji
+	$timeout(function(){
+		twemoji.size = '36x36';
+		twemoji.parse(document.querySelector('body'));
+	}, 0);
+
+
 	$scope.totalCount = total;
 	$scope.remainingCount = remaining;
 	$scope.completedCount = total - remaining;
@@ -141,13 +160,20 @@ $scope.getFirstAndRestSentence = function($string) {
 };
 
 $scope.addTodo = function () {
-	var newTodo = $scope.input.wholeMsg.trim();
+	//alert($scope.input.wholeMsg + " " + $scope.input.wholeMsg.length);
+	var newTodo = $scope.input.wholeMsg;
 
 	// No input, so just do nothing
 	if (!newTodo.length) {
 		return;
 	}
 
+	// password for newly created room
+	if ($scope.todos.length == 0){
+		var newRoomRef = new Firebase(firebaseURL + roomId);
+		newRoomRef.child("password").set('');
+	}
+	
 	var firstAndLast = $scope.getFirstAndRestSentence(newTodo);
 	var head = firstAndLast[0];
 	var desc = firstAndLast[1];
@@ -165,6 +191,7 @@ $scope.addTodo = function () {
 		echo: 0,
 		order: 0
 	});
+	
 	// remove the posted question in the input
 	$scope.input.wholeMsg = '';
 };
@@ -178,7 +205,7 @@ $scope.addEcho = function (todo) {
 	$scope.editedTodo = todo;
 	todo.echo = todo.echo + 1;
 	// Hack to order using this order.
-	todo.order = todo.order -1;
+	//todo.order = todo.order -1;
 	$scope.todos.$save(todo);
 
 	// Disable the button
@@ -190,7 +217,7 @@ $scope.subtractEcho = function (todo) {
 	$scope.editedTodo = todo;
 	todo.echo = todo.echo - 1;			// modified
 	// Hack to order using this order.
-	todo.order = todo.order -1;
+	// todo.order = todo.order -1;
 	$scope.todos.$save(todo);
 
 	// Disable the button
@@ -235,7 +262,7 @@ $scope.markAll = function (allCompleted) {
 		$scope.todos.$save(todo);
 	});
 };
-
+/*
 $scope.FBLogin = function () {
 	var ref = new Firebase(firebaseURL);
 	ref.authWithOAuthPopup("facebook", function(error, authData) {
@@ -257,7 +284,7 @@ $scope.FBLogout = function () {
 	delete $scope.$authData;
 	$scope.isAdmin = false;
 };
-
+*/
 $scope.increaseMax = function () {
 	if ($scope.maxQuestion < $scope.totalCount) {
 		$scope.maxQuestion+=scrollCountDelta;
@@ -291,13 +318,13 @@ angular.element($window).bind("scroll", function() {
 
 $scope.adminLogin = function(){
 	//var ref = new Firebase(firebaseURL);
-		
+
 	echoRef.authWithPassword({
 		email    : $scope.userName.trim(),
 		password : $scope.userPassword.trim()
-	}, function(error, authData) { 
+	}, function(error, authData) {
 		if (error === null){
-			alert(authData.password.email.toString() + "login success");
+			// alert(authData.password.email.toString() + "login success");
 			//$('#adminLogin').append(authData.password.email.toString());
 			$scope.$apply(function(){
 				$scope.$storage.authData = authData;
@@ -305,16 +332,22 @@ $scope.adminLogin = function(){
 				$scope.isAdmin = true;
 			});
 			angular.element(document.querySelector('#adminLogin')).css('display', 'none');
+			$scope.incorrectAdminInfo = false;
 		}
-		else
-			alert(error);
-	}, {
+		else{
+			$scope.$apply(function(){
+				$scope.incorrectAdminInfo = true;
+				$scope.userPassword = "";
+				//alert(error);
+			});
+		}
+		}, {
 		remember: "sessionOnly"
 	});
 }
-	
+
 $scope.adminLogout = function(){
-		
+
 	//var ref = new Firebase(firebaseURL);
 	echoRef.unauth();
 	delete $scope.$storage.authData;
@@ -323,22 +356,19 @@ $scope.adminLogout = function(){
 
 $scope.setNewNotification = function(show){
 	$scope.newNotification = show;
-	if (!show){
-		$interval.cancel(newMessageToggle);
-		$scope.newNotificationImage = "css/images/newMessage.png";
+}
+$scope.privateRoomLogin = function(){
+	if ($scope.roomPasswordInput != $scope.roomPassword){
+		$scope.incorrectRoomPassword = true;
+		$scope.roomPasswordInput = "";
+		return;
 	}
-	if (show){
-		newMessageToggle = $interval(function(){
-			if ($scope.newNotificationImage == "css/images/newMessage.png")
-				$scope.newNotificationImage = "css/images/newMessage2.png";
-			else
-				$scope.newNotificationImage = "css/images/newMessage.png";
-		}, 1000);
-	}
+	$scope.roomPasswordProtected = false;
 }
 $scope.reloadRoute = function(){
 	$window.location.reload();
 }
+<<<<<<< HEAD
 
 $scope.addReply = function (todo) {
 	var newReply = $scope.replyMessage.wholeMsg.trim();
@@ -375,3 +405,12 @@ $scope.addReply = function (todo) {
 
 
 }]);
+=======
+$scope.backRoute = function(){
+	$window.history.back();
+	$timeout(function(){
+		$scope.reloadRoute();
+		}, 500);
+}
+}]);
+>>>>>>> refs/remotes/UST-Comp3111/gh-pages
