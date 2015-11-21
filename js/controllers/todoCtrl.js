@@ -73,6 +73,9 @@ var query = echoRef.orderByChild("order");
 // Should we limit?
 //.limitToFirst(1000);
 $scope.todos = $firebaseArray(query);
+$scope.todos.forEach(function (todo) {
+	todo.showReply = false;
+});
 
 /* setting up $scope.replies */
 var replyUrl = firebaseURL + roomId + "/replies/";
@@ -80,23 +83,26 @@ var replyEchoRef = new Firebase(replyUrl);
 var replyQuery = replyEchoRef.orderByChild("order");
 $scope.replies = $firebaseArray(replyQuery);
 
-//$scope.input = {};
-//$scope.input.wholeMsg = '';
 $scope.editedTodo = null;
 
 // check administrator login state
 if ($scope.$storage.authData != null){
-	//alert($scope.$storage.authData.password.email);
-	//$scope.$apply(function(){
-		$scope.$authData = $scope.$storage.authData;
-		$scope.isAdmin = true;
-	//});
+	$scope.$authData = $scope.$storage.authData;
+	$scope.isAdmin = true;
 }
 
 // pre-precessing for collection
 $scope.$watchCollection('todos', function () {
 	var total = 0;
 	var remaining = 0;
+	
+	// reply count
+	replyEchoRef.on('value', function(data){
+		$scope.todos.forEach(function(todo){
+			todo.replyCount = data.child(todo.$id).numChildren();
+		});
+	});
+	
 	$scope.todos.forEach(function (todo) {
 		// Skip invalid entries so they don't break the entire app.
 		if (!todo || !todo.head ) {
@@ -107,11 +113,7 @@ $scope.$watchCollection('todos', function () {
 		if (todo.completed === false) {
 			remaining++;
 		}
-		// set time
-		//todo.dateString = new Date(todo.timestamp).toString();
-		//$scope.$storage[todo.$id] = "";
 		todo.tags = todo.wholeMsg.match(/#\w+/g);
-		//todo.trustedDesc = $sce.trustAsHtml(todo.linkedDesc);
 	});
 
 	// new questions notification
@@ -193,6 +195,39 @@ $scope.addTodo = function () {
 	$scope.input.wholeMsg = '';
 };
 
+
+$scope.addReply = function (todo, reply) {
+	var newReply = reply.wholeMsg.trim();
+	// No input, so just do nothing
+	if (!newReply.length) {
+		return;
+	}
+	// setting the path to the reply directory
+	
+	var questionId = todo.$id;
+	var url = replyUrl + questionId;
+	var tempReplyRef = new Firebase(url);
+	var tempReplyQuery = tempReplyRef.orderByChild("order");
+	
+	$scope.tempReply = $firebaseArray(tempReplyQuery);
+	
+	$scope.tempReply.$add({
+		wholeMsg: newReply,
+		head: '',
+		headLastChar: '',
+		desc: '',
+		//linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
+		newQuestion: true,
+		completed: false,
+		timestamp: new Date().getTime(),
+		//tags: "...",
+		echo: 0,
+		order: 0
+	});
+	// remove the posted question in the input
+	reply.wholeMsg = '';
+};
+
 $scope.editTodo = function (todo) {
 	$scope.editedTodo = todo;
 	$scope.originalTodo = angular.extend({}, $scope.editedTodo);
@@ -201,8 +236,6 @@ $scope.editTodo = function (todo) {
 $scope.addEcho = function (todo) {
 	$scope.editedTodo = todo;
 	todo.echo = todo.echo + 1;
-	// Hack to order using this order.
-	//todo.order = todo.order -1;
 	$scope.todos.$save(todo);
 
 	// Disable the button
@@ -212,15 +245,12 @@ $scope.addEcho = function (todo) {
 // Dislike function
 $scope.subtractEcho = function (todo) {
 	$scope.editedTodo = todo;
-	todo.echo = todo.echo - 1;			// modified
-	// Hack to order using this order.
-	// todo.order = todo.order -1;
+	todo.echo = todo.echo - 1;
 	$scope.todos.$save(todo);
 
 	// Disable the button
 	$scope.$storage[todo.$id] = "echoed";
 };
-
 $scope.doneEditing = function (todo) {
 	$scope.editedTodo = null;
 	var wholeMsg = todo.wholeMsg.trim();
@@ -259,29 +289,7 @@ $scope.markAll = function (allCompleted) {
 		$scope.todos.$save(todo);
 	});
 };
-/*
-$scope.FBLogin = function () {
-	var ref = new Firebase(firebaseURL);
-	ref.authWithOAuthPopup("facebook", function(error, authData) {
-		if (error) {
-			console.log("Login Failed!", error);
-		} else {
-			$scope.$apply(function() {
-				$scope.$authData = authData;
-				$scope.isAdmin = true;
-			});
-			console.log("Authenticated successfully with payload:", authData);
-		}
-	});
-};
 
-$scope.FBLogout = function () {
-	var ref = new Firebase(firebaseURL);
-	ref.unauth();
-	delete $scope.$authData;
-	$scope.isAdmin = false;
-};
-*/
 $scope.increaseMax = function () {
 	if ($scope.maxQuestion < $scope.totalCount) {
 		$scope.maxQuestion+=scrollCountDelta;
@@ -366,37 +374,12 @@ $scope.reloadRoute = function(){
 	$window.location.reload();
 }
 
-$scope.addReply = function (todo) {
-	var newReply = $scope.replyMessage.wholeMsg.trim();
-	// No input, so just do nothing
-	if (!newReply.length) {
-		return;
-	}
-	// setting the path to the reply directory
-	var questionId = todo.$id;
-	var url = replyUrl + questionId;
-	var echoRef = new Firebase(url);
-	var query = echoRef.orderByChild("order");
-	$scope.reply = $firebaseArray(query);
-	
-	//todo.replyCount = todo.child('replies').numChildren();
-	
-	$scope.reply.$add({
-		wholeMsg: newReply,
-		head: '',
-		headLastChar: '',
-		desc: '',
-		//linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
-		newQuestion: true,
-		completed: false,
-		timestamp: new Date().getTime(),
-		//tags: "...",
-		echo: 0,
-		order: 0
-	});
-	// remove the posted question in the input
-	$scope.replyMessage.wholeMsg = '';
-};
+$scope.toggleReply = function(todo){
+	if (todo.showReply == true)
+		todo.showReply = false;
+	else
+		todo.showReply = true;
+}
 
 $scope.backRoute = function(){
 	$window.history.back();
