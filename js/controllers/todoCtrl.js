@@ -74,16 +74,13 @@ var query = echoRef.orderByChild("order");
 //.limitToFirst(1000);
 $scope.todos = $firebaseArray(query);
 
-<<<<<<< HEAD
 /* setting up $scope.replies */
 var replyUrl = firebaseURL + roomId + "/replies/";
 var replyEchoRef = new Firebase(replyUrl);
 var replyQuery = replyEchoRef.orderByChild("order");
 $scope.replies = $firebaseArray(replyQuery);
 
-=======
 //$scope.input = {};
->>>>>>> refs/remotes/UST-Comp3111/gh-pages
 //$scope.input.wholeMsg = '';
 $scope.editedTodo = null;
 
@@ -368,7 +365,6 @@ $scope.privateRoomLogin = function(){
 $scope.reloadRoute = function(){
 	$window.location.reload();
 }
-<<<<<<< HEAD
 
 $scope.addReply = function (todo) {
 	var newReply = $scope.replyMessage.wholeMsg.trim();
@@ -402,15 +398,11 @@ $scope.addReply = function (todo) {
 	$scope.replyMessage.wholeMsg = '';
 };
 
-
-
-}]);
-=======
 $scope.backRoute = function(){
 	$window.history.back();
 	$timeout(function(){
 		$scope.reloadRoute();
 		}, 500);
 }
+
 }]);
->>>>>>> refs/remotes/UST-Comp3111/gh-pages

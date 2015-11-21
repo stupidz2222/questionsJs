@@ -126,42 +126,6 @@
 			</div>
 		</div>
 		<div class="rightPanel">
-<<<<<<< HEAD
-			<div class="list-group" id="todo-list">			
-				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
-					<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
-						<span class="label label-danger" ng-show="todo.newQuestion">New</span>
-						<!--<span class="badge">{{todo.echo}}</span>-->
-						<!-- switch -->
-						<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
-						<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
-						<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
-						<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
-					</h4>
-					<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>--> 
-					
-					<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
-					
-					<div style="float:right">
-						{{todo.echo}}
-						<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
-						<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
-						<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
-						<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
-						
-						<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>
-					</div>
-					<div style="">	
-						<span ng-repeat="reply in replies | filter: {$id : todo.$id}">
-							<span class="list-group-item" ng-repeat="message in reply" style="margin-top:40px">
-								<span>{{message.wholeMsg}}</span>
-							</span>
-						</span>
-					</div>
-					
-				</span>
-			</div>
-=======
 			<div class="list-group" id="todo-list">
 				<!-- Fix post: order == 1-->
 				<span class="fix-list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
@@ -190,6 +154,14 @@
 							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
 							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
 							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
+							<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>
+						</div>
+						<div style="">	
+							<span ng-repeat="reply in replies | filter: {$id : todo.$id}">
+								<span class="list-group-item" ng-repeat="message in reply" style="margin-top:40px">
+									<span>{{message.wholeMsg}}</span>
+								</span>
+							</span>
 						</div>
 
 				</span> <!-- end of Fix post -->
@@ -221,6 +193,14 @@
 							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
 							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
 							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
+							<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>
+						</div>
+						<div style="">	
+							<span ng-repeat="reply in replies | filter: {$id : todo.$id}">
+								<span class="list-group-item" ng-repeat="message in reply" style="margin-top:40px">
+									<span>{{message.wholeMsg}}</span>
+								</span>
+							</span>
 						</div>
 
 				</span> <!-- end of Non-fix post -->
@@ -228,7 +208,6 @@
 					You have new messages.
 				</div>
 			</div><!-- list-group -->
->>>>>>> refs/remotes/UST-Comp3111/gh-pages
 			<div class="bottomBar">
 				<div class="functionList">
 					<!--<div id="newMessageBtn" ng-click="setNewNotification(false)">
