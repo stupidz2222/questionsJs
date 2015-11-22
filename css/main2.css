@@ -359,6 +359,16 @@ html, body
 
     cursor: pointer;
 }
+#fixedPostSelect
+{
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	right: 65px;
+	top: 8px;
+    cursor: pointer;
+	color: black;
+}
 #newMessageBtn:hover
 {
 	font-weight: bold;
