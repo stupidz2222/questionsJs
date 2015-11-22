@@ -212,10 +212,9 @@
 									<span>{{message.wholeMsg}}</span>
 									<span style="float:right;font-size:10px">{{message.timestamp | timeago}}</span>
 									<div style="float:right">
-										<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeReply(message)"><span class="glyphicon glyphicon-trash"></span></button>
+										<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeReply(todo, message)"><span class="glyphicon glyphicon-trash"></span></button>
 									</div>
 								</span>
-								
 							</span>
 							<div style="width:100%">
 								<div>

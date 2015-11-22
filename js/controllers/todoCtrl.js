@@ -266,6 +266,24 @@ $scope.removeTodo = function (todo) {
 	$scope.todos.$remove(todo);
 };
 
+$scope.removeReply = function(todo, message){
+	var tempReplyRef = new Firebase(replyUrl + todo.$id + '/');
+	//var tempReplyQuery = tempReplyRef.orderByChild("order");
+	tempReplyRef.on('value', function(data){
+		data.forEach(function(reply){
+			if (reply.child('wholeMsg').val()==message.wholeMsg && reply.child('timestamp').val()==message.timestamp){
+				var removeReplyRef = new Firebase(replyUrl + todo.$id + '/' + reply.key());
+				removeReplyRef.remove();
+			}
+		});
+	});
+	//alert(tempReplyRef.child(message));
+	
+	//$scope.tempReply2 = $firebaseArray(tempReplyQuery);
+	
+	
+};
+
 $scope.clearCompletedTodos = function () {
 	$scope.todos.forEach(function (todo) {
 		if (todo.completed) {
