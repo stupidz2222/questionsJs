@@ -23,21 +23,10 @@
 	<!-- from http://tympanus.net/codrops/2011/10/24/creative-css3-animation-menus/ -->
 	<link rel="stylesheet" href="css/ca-menu.css">
 
-	<!-- from LevchenkoD Github -->
-	<!--<link rel="stylesheet" href="css/twemoji.input.css">-->
+	<!-- spinkit spinner from http://tobiasahlin.com/spinkit/ -->
+	<link href="css/spinkit.css" rel="stylesheet">
 </head>
 <body ng-controller="TodoCtrl">
-	<div id="adminBtn">
-		<div ng-show="!isAdmin">
-			Administrator Login<br />
-			<input class="btn btn-default" value="Login" id="adminLoginBtn" />
-		</div>
-		<div ng-show="isAdmin">
-			<span>{{ $authData.password.email.split('@')[0] }}</span><br />
-			<input class="btn btn-default" value="Logout" id="adminLogoutBtn" ng-click="adminLogout()" />
-		</div>
-	</div>
-	<!-- Administrator Login -->
 	<div id="adminLogin">
 		<div id="adminLoginPanel">
 			<div align="center">
@@ -52,6 +41,20 @@
 				<div align="center" style="margin-top:20px;">
 					<input class="btn btn-default" type="submit" value="Login" id="submitLogin" ng-click="adminLogin()" />
 					<input class="btn btn-default" type="button" value="Cancel" id="cancelLogin" />
+				</div>
+				<div class="sk-fading-circle" ng-show="loading">
+					<div class="sk-circle1 sk-circle"></div>
+					<div class="sk-circle2 sk-circle"></div>
+					<div class="sk-circle3 sk-circle"></div>
+					<div class="sk-circle4 sk-circle"></div>
+					<div class="sk-circle5 sk-circle"></div>
+					<div class="sk-circle6 sk-circle"></div>
+					<div class="sk-circle7 sk-circle"></div>
+					<div class="sk-circle8 sk-circle"></div>
+					<div class="sk-circle9 sk-circle"></div>
+					<div class="sk-circle10 sk-circle"></div>
+					<div class="sk-circle11 sk-circle"></div>
+					<div class="sk-circle12 sk-circle"></div>
 				</div>
 			</fieldset>
 		</div>
@@ -116,11 +119,22 @@
 							</div>
 						</div>
 					</div>
-					<div>
-						<textarea type="text" id="new-reply" 
-						placeholder="Post Reply"
-						ng-model="replyMessage.wholeMsg"
-						autofocus></textarea>
+					<li id="adminLoginMenu" class="leftPanelMenuItem">
+						<a href="#">
+							<span class="ca-icon">U</span>
+							<div class="ca-content">
+								<h2 class="ca-main">Administrator Login</h2>
+							</div>
+						</a>
+					</li>
+					<div class="menu-div" id="menu-div-adminLoginMenu">
+						<div ng-show="isAdmin">
+							<span>{{ $authData.password.email.split('@')[0] }}</span><br />
+							<input class="btn btn-default" value="Logout" id="adminLogoutBtn" ng-click="adminLogout()" />
+						</div>
+						<div ng-show="!isAdmin">
+							<input class="btn btn-default" value="Login" id="adminLoginBtn" />
+						</div>
 					</div>
 				</ul>
 			</div>
@@ -128,10 +142,11 @@
 		<div class="rightPanel">
 			<div class="list-group" id="todo-list">
 				<!-- Fix post: order == 1-->
-				<span class="fix-list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
+				<span class="fix-list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion"
 						ng-class="{completed: todo.completed, editing: todo == editedTodo}"
 						ng-show="!roomPasswordProtected"
 						ng-if="todo.order == 1">
+						
 
 						<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
 							<span class="label label-danger" ng-show="todo.newQuestion">New</span>
@@ -149,14 +164,14 @@
 						<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
 
 						<div style="float:right">
-							{{todo.echo}}
 							<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+							{{todo.echo}}
 							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
-							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
-							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
-							<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>
+							<!--<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>-->
+							<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeTodo(todo)"><span class="glyphicon glyphicon-trash"></span></button>
+							<!--<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>-->
 						</div>
-						<div style="">	
+						<div>	
 							<span ng-repeat="reply in replies | filter: {$id : todo.$id}">
 								<span class="list-group-item" ng-repeat="message in reply" style="margin-top:40px">
 									<span>{{message.wholeMsg}}</span>
@@ -167,19 +182,13 @@
 				</span> <!-- end of Fix post -->
 
 				<!-- Non-fix post: order != 1-->
-				<span class="list-group-item" ng-repeat="todo in todos | filter:input | questionFilter:maxQuestion | orderBy:predicate:reverse"
+				<span class="list-group-item" ng-repeat="todo in todos | filter:input | orderBy:predicate:reverse"
 						ng-class="{completed: todo.completed, editing: todo == editedTodo}"
 						ng-show="!roomPasswordProtected"
 						ng-if="todo.order != 1">
-
+						
 						<h4 class="list-group-item-heading" ng-switch on="todo.headLastChar">
 							<span class="label label-danger" ng-show="todo.newQuestion">New</span>
-							<!--<span class="badge">{{todo.echo}}</span>-->
-							<!-- switch -->
-							<!--
-							<span ng-switch-when="?" class="glyphicon glyphicon-question-sign"></span>
-							<span ng-switch-when="!" class="glyphicon glyphicon-ice-lolly"></span>
-							-->
 							<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
 							<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
 						</h4>
@@ -187,45 +196,43 @@
 
 						<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
 
-						<div style="float:right">
-							{{todo.echo}}
+						<div align="right">
 							<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+							{{todo.echo}}
 							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
-							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>
-							<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-trash" aria-hidden="true" ng-click="removeTodo(todo)">Del</button>
-							<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>
+							<!--<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>-->
+							<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeTodo(todo)"><span class="glyphicon glyphicon-trash"></span></button>
+							<button class="btn btn-default btn-xs glyphicon glyphicon-comment" ng-click="toggleReply(todo)"></button>
+							<!--<button class="btn btn-default btn-xs glyphicon glyphicon-comment" ng-click="addReply(todo)"></button>-->
+							{{todo.replyCount}}
 						</div>
-						<div style="">	
-							<span ng-repeat="reply in replies | filter: {$id : todo.$id}">
-								<span class="list-group-item" ng-repeat="message in reply" style="margin-top:40px">
+						<div class="questionReply" ng-show="todo.showReply">	
+							<span ng-repeat="reply in replies | filter: {$id : todo.$id}" >
+								<span class="list-group-item" ng-repeat="message in reply">
 									<span>{{message.wholeMsg}}</span>
+									<span style="float:right;font-size:10px">{{message.timestamp | timeago}}</span>
+									<div style="float:right">
+										<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeReply(todo, message)"><span class="glyphicon glyphicon-trash"></span></button>
+									</div>
 								</span>
 							</span>
+							<div style="width:100%">
+								<div>
+									<textarea type="text" class="new-reply" 
+									placeholder="Reply"
+									ng-model="reply.wholeMsg"></textarea>
+								</div>
+								<div align="right">
+									<span ng-click="addReply(todo, reply)" class="replyQuestion">Reply</span>
+								</div>
+							</div>
 						</div>
-
 				</span> <!-- end of Non-fix post -->
 				<div id="newMessageBtn" ng-show="newNotification" ng-click="setNewNotification(false)">
 					You have new messages.
 				</div>
 			</div><!-- list-group -->
 			<div class="bottomBar">
-				<div class="functionList">
-					<!--<div id="newMessageBtn" ng-click="setNewNotification(false)">
-						You have new messages.
-					</div>-->
-					<!--<img id="newMessageBtn" ng-click="setNewNotification(false)" ng-src="{{newNotificationImage}}" />-->
-					<!--
-					<label for="order"> Select order: </label>
-
-					<select name="orderby" ng-model="predicate">
-						<option value="timestamp">Time</option>
-						<option value="echo">Like</option>
-					</select>
-
-					<label for="order">Descending</label>
-					<input type="checkbox" name = "desc" ng-model = "reverse" ng-value="true" />
-					-->
-				</div>
 				<div class="input-group">
 					<textarea type="text" id="new-todo"
 					placeholder="Search or Post Question"
@@ -263,9 +270,7 @@
 <script src="js/directives/todoEscape.js"></script>
 <script src="js/lib/jquery.min.js"></script>
 <script src="http://twemoji.maxcdn.com/twemoji.min.js"></script>
-<script>
-	//new TwemojiInput(document.querySelector('textarea'));
-</script>
+<script type="text/javascript" src="http://l2.io/ip.js?var=myip"></script>
 <script>
 	$(function(){
 		var Emoji = ["🌒","🌓","🌔","🌕","🌖","🌗","🌘","🌙","🌚","🌛","🌜","🌝","🌞","🌟","🌠","🌰","🌱","🌲","🌳","🌴","🌵","🌷","🌸","🌹","🌺","🌻","🌼","🌽","🌾","🌿","🍀","🍁","🍂","🍃","🍄","🍅","🍆","🍇","🍈","🍉","🍊","🍋","🍌","🍍","🍎","🍏","🍐","🍑","🍒","🍓","🍔","🍕","🍖","🍗","🍘","🍙","🍚","🍛","🍜","🍝","🍞","🍟","🍠","🍡","🍢","🍣","🍤","🍥","🍦","🍧","🍨","🍩","🍪","🍫","🍬","🍭","🍮","🍯","🍰","🍱","🍲","🍳","🍴","🍵","🍶","🍷","🍸","🍹","🍺","🍻","🍼","🎀","🎁","🎂","🎃","🎄","🎅","🎆","🎇","🎈","🎉","🎊","🎋","🎌","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎠","🎡","🎢","🎣","🎤","🎥","🎦","🎧","🎨","🎩","🎪","🎫","🎬","🎭","🎮","🎯","🎰","🎱","🎲","🎳","🎴","🎵","🎶","🎷","🎸","🎹","🎺","🎻","🎼","🎽","🎾","🎿","🏀","🏁","🏂","🏃","🏄","🏆","🏇","🏈","🏉","🏊","🏠","🏡","🏢","🏣","🏤","🏥","🏦","🏧","🏨","🏩","🏪","🏫","🏬","🏭","🏮","🏯","🏰","🐀","🐁","🐂","🐃","🐄","🐅","🐆","🐇","🐈","🐉","🐊","🐋","🐌","🐍","🐎","🐏","🐐","🐑","🐒","🐓","🐔","🐕","🐖","🐗","🐘","🐙","🐚","🐛","🐜","🐝","🐞","🐟","🐠","🐡","🐢","🐣","🐤","🐥","🐦","🐧","🐨","🐩","🐪","🐫","🐬","🐭","🐮","🐯","🐰","🐱","🐲","🐳","🐴","🐵","🐶","🐷","🐸","🐹","🐺","🐻","🐼","🐽","🐾","👀","👂","👃","👄","👅","👆","👇","👈","👉","👊","👋","👌","👍","👎","👏","👐","👑","👒","👓","👔","👕","👖","👗","👘","👙","👚","👛","👜","👝","👞","👟","👠","👡","👢","👣","👤","👥","👦","👧","👨","👩","👪","👫","👬","👭","👮","👯","👰","👱","👲","👳","👴","👵","👶","👷","👸","👹","👺","👻","👼","👽","👾","👿","💀","💁","💂","💃","💄","💅","💆","💇","💈","💉","💊","💋","💌","💍","💎","💏","💐","💑","💒","💓","💔","💕","💖","💗","💘","💙","💚","💛","💜","💝","💞","💟","💠","💡","💢","💣","💤","💥","💦","💧","💨","💩","💪","💫","💬","💭","💮","💯","💰","💱","💲","💳","💴","💵","💶","💷","💸","💹","💺","💻","💼","💽","💾","💿","📀","📁","📂","📃","📄","📅","📆","📇","📈","📉","📊","📋","📌","📍","📎","📏","📐","📑","📒","📓","📔","📕","📖","📗","📘","📙","📚","📛","📜","📝","📞","📟","📠","📡","📢","📣","📤","📥","📦","📧","📨","📩","📪","📫","📬","📭","📮","📯","📰","📱","📲","📳","📴","📵","📶","📷","📹","📺","📻","📼","🔀","🔁","🔂","🔃","🔄","🔅","🔆","🔇","🔈","🔉","🔊","🔋","🔌","🔍","🔎","🔏","🔐","🔑","🔒","🔓","🔔","🔕","🔖","🔗","🔘","🔙","🔚","🔛","🔜","🔝","🔞","🔟","🔠","🔡","🔢","🔣","🔤","🔥","🔦","🔧","🔨","🔩","🔪","🔫","🔬","🔭","🔮","🔯","🔰","🔱","🔲","🔳","🔴","🔵","🔶","🔷","🔸","🔹","🔺","🔻","🔼","🔽","🕐","🕑","🕒","🕓","🕔","🕕","🕖","🕗","🕘","🕙","🕚","🕛","🕜","🕝","🕞","🕟","🕠","🕡","🕢","🕣","🕤","🕥","🕦","🕧","🗻","🗼","🗽","🗾","🗿","😀","😁","😂","😃","😄","😅","😆","😇","😈","😉","😊","😋","😌","😍","😎","😏","😐","😑","😒","😓","😔","😕","😖","😗","😘","😙","😚","😛","😜","😝","😞","😟","😠","😡","😢","😣","😤","😥","😦","😧","😨","😩","😪","😫","😬","😭","😮","😯","😰","😱","😲","😳","😴","😵","😶","😷","😸","😹","😺","😻","😼","😽","😾","😿","🙀","🙅","🙆","🙇","🙈","🙉","🙊","🙋","🙌","🙍","🙎","🙏","🚀","🚁","🚂","🚃","🚄","🚅","🚆","🚇","🚈","🚉","🚊","🚋","🚌","🚍","🚎","🚏","🚐","🚑","🚒","🚓","🚔","🚕","🚖","🚗","🚘","🚙","🚚","🚛","🚜","🚝","🚞","🚟","🚠","🚡","🚢","🚣","🚤","🚥","🚦","🚧","🚨","🚩","🚪","🚫","🚬","🚭","🚮","🚯","🚰","🚱","🚲","🚳","🚴","🚵","🚶","🚷","🚸","🚹","🚺","🚻","🚼","🚽","🚾","🚿","🛀","🛁","🛂","🛃","🛄","🛅","‼","⁉","™","ℹ","↔","↕","↖","↗","↘","↙","↩","↪","#⃣","⌚","⌛","⏩","⏪","⏫","⏬","⏰","⏳","Ⓜ","▪","▫","▶","◀","◻","◼","◽","◾","☀","☁","☎","☑","☔","☕","☝","☺","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","♠","♣","♥","♦","♨","♻","♿","⚓","⚠","⚡","⚪","⚫","⚽","⚾","⛄","⛅","⛎","⛔","⛪","⛲","⛳","⛵","⛺","⛽","✂","✅","✈","✉","✊","✋","✌","✏","✒","✔","✖","✨","✳","✴","❄","❇","❌","❎","❓","❔","❕","❗","❤","➕","➖","➗","➡","➰","➿","⤴","⤵","⬅","⬆","⬇","⬛","⬜","⭐","⭕","0⃣","〰","〽","1⃣","2⃣","㊗","㊙","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣","©","®",""];
@@ -281,8 +286,7 @@
 				return;
 			$('#menu-div-' + this.id).css('display', 'block');
 		});
-
-		// administrator panel
+		
 		$('#adminLoginBtn').on('click', function(){
 			$('#adminLogin').css('display', 'block');
 		});
@@ -290,7 +294,7 @@
 			$('#adminLogin').css('display', 'none');
 			$('#userPassword').val("");
 		});
-
+	
 		// add emoji during initialization
 		$(window).on('load', function(){
 			for (var i = 0 ; i < Emoji.length ; i++){
