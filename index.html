@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
+	
 	<!-- Custom styles for this template -->
 	<link href="css/cover.css" rel="stylesheet">
 </head>
@@ -37,7 +38,7 @@
 					Room name is required!
 				</div>
 				<div class="warning" role="alert" ng-show="form.input.$error.pattern">
-					Room name must be a single English word!
+					No symbols are allowed!
 				</div>
 				<br />
 				<div align="right">
@@ -59,10 +60,21 @@
 					</table>
 				</div>
 			</div>
-			<div class="content" id="feature">
-				<!--<div>
-					<img src="css/images/info.png" width="100%" />
-				</div>-->
+			<div class="content" id="searchQuestion">
+				<div>
+					<!--<img src="css/images/info.png" width="100%" />-->
+					<input style="color:black" placeholder="Search for a question." type="text" ng-model="globalSearchValue"></input>
+					<button class="btn btn-default" ng-click="globalSearch()">Search</button>
+					<div id="searchResultWrapper">
+					<table id="searchResult" width="100%">
+						<tr>
+							<th width="30%">Room</th>
+							<th width="70%">Question</th>
+						</tr>
+					</table>
+				</div>
+					
+				</div>
 			</div>
 			
 		</div>
@@ -79,7 +91,7 @@
 					<a href="#" id="navRoom" class="navOption">ROOM</a>
 				</div>
 				<div class="navCircle">
-					<a href="#" id="navFeature" class="navOption">FEATURES</a>
+					<a href="#" id="navSearch" class="navOption">SEARCH</a>
 				</div>
 			</div>
 		</div>
@@ -113,6 +125,25 @@
 			var url = "https://flickering-torch-4928.firebaseIO.com";
 			var echoRef = new Firebase(url);
 			
+			$scope.globalSearch = function(){
+				if ($scope.globalSearchValue.length == 0)
+					return;
+				echoRef.on('value', function(data){
+					data.forEach(function(room){
+						room.child('questions').forEach(function(question){
+							if (question.child('wholeMsg').val().match($scope.globalSearchValue)){
+								var table = document.getElementById("searchResult");
+								var element = document.createElement("tr");
+								var roomName = '<a href="question2.html#/' + room.key() + '">' + (room.key().length > 10?room.key().substring(0, 9) + "...":room.key()) + '</a>';
+								element.innerHTML += '<td>' + roomName + '</td>';
+								element.innerHTML += "<td>" + question.child('wholeMsg').val() + "</td>";
+								table.appendChild(element);
+								//$scope.resultList.push(room.key() + " " + question.child('wholeMsg').val());
+							}
+						});
+					});
+				});
+			}
 			
 		}]);
 		
@@ -134,9 +165,9 @@
 					
 					var element = document.createElement("tr");
 					if (room.child('questions').numChildren() >= 30)
-						element.innerHTML = '<td><img src="css/images/hotIcon.png" width=\"30px\" /><a href="question2.html#/'+room.key()+'">'+room.key()+'</a></td>';
+						element.innerHTML = '<td><img src="css/images/hotIcon.png" width=\"30px\" /><a href="question2.html#/'+room.key()+'">'+(room.key().length > 20 ? room.key().substring(0, 19) + "...": room.key())+'</a></td>';
 					else
-						element.innerHTML = '<td><a href="question2.html#/'+room.key()+'">'+room.key()+'</a></td>';
+						element.innerHTML = '<td><a href="question2.html#/'+room.key()+'">'+(room.key().length > 20 ? room.key().substring(0, 19) + "...": room.key())+'</a></td>';
 					var image = (room.child('password').val()!=null&&room.child('password').val()!=''?'<img src=\"css/images/lockRoom.png\" height=\"30px\">':'<img src=\"css/images/unlockRoom.png\" height=\"30px\">');
 					element.innerHTML += '<td>' + image + '</td>';
 					element.innerHTML += "<td>" + room.child('questions').numChildren() + "</td>";
@@ -203,9 +234,9 @@
 						$('#room').css('display', 'block');
 						$('#room').animate({opacity: '1'}, 500);
 						break;
-					case "navFeature":
-						$('#feature').css('display', 'block');
-						$('#feature').animate({opacity: '1'}, 500);
+					case "navSearch":
+						$('#searchQuestion').css('display', 'block');
+						$('#searchQuestion').animate({opacity: '1'}, 500);
 						break;
 					}
 				}, 2200);

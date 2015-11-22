@@ -61,11 +61,7 @@ privateRef.once('value', function(data){
 		//alert("password required");
 	}
 });
-/*
-// check for new room and add password field
-var newRoomRef = new Firebase(firebaseURL + roomId);
-newRoomRef.child("password").set('');
-*/
+
 /* setting up $scope.todos */
 var url = firebaseURL + roomId + "/questions/";
 var echoRef = new Firebase(url);
@@ -322,12 +318,12 @@ angular.element($window).bind("scroll", function() {
 });
 
 $scope.adminLogin = function(){
-	//var ref = new Firebase(firebaseURL);
-
+	$scope.loading = true;
 	echoRef.authWithPassword({
 		email    : $scope.userName.trim(),
 		password : $scope.userPassword.trim()
 	}, function(error, authData) {
+		$scope.loading = false;
 		if (error === null){
 			// alert(authData.password.email.toString() + "login success");
 			//$('#adminLogin').append(authData.password.email.toString());
