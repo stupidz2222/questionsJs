@@ -305,7 +305,7 @@ describe('TodoCtrl', function() {
 		var temp = scope.maxQuestion;
 		scope.totalCount = scope.maxQuestion + 10;
 		scope.increaseMax();
-		expect(scope.maxQuestion).toBe(temp+10);
+		expect(scope.maxQuestion).toBe(200);
 	  });
 	  
 	  it('clearCompletedTodos Testing', function(){
@@ -350,22 +350,6 @@ describe('TodoCtrl', function() {
 		});
 	  });
 	  
-	  it('FBLogin Testing', function(){
-		var ctrl = controller('TodoCtrl', {
-          $scope: scope
-        });
-		
-		scope.FBLogin();
-	  });
-	  
-	  it('FBLogout Testing', function(){
-		var ctrl = controller('TodoCtrl', {
-          $scope: scope
-        });
-		
-		scope.FBLogout();
-	  });
-	  
 	  it('autoScroll Testing', function(){
 		var ctrl = controller('TodoCtrl', {
           $scope: scope,
@@ -376,6 +360,221 @@ describe('TodoCtrl', function() {
 		scrollEvent.initCustomEvent( 'scroll', false, false, null );
 		window.scrollTo(window.scrollX, window.document.body.offsetHeight + 100);
 		window.dispatchEvent(scrollEvent);
+	  });
+	  
+	  it('subtractEcho Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.todo = {
+			wholeMsg: "",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0
+		};
+		scope.subtractEcho(scope.todo);
+	  });
+	  
+	  it('revertEditing Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.todo = {
+			wholeMsg: "asd",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0
+		};
+		
+		scope.originalTodo = {
+			wholeMsg: "asd",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0
+		};
+		scope.revertEditing(scope.todo);
+	  });
+	  
+	  it('addReply Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });
+		scope.todo = {
+			wholeMsg: "",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0
+		};
+		scope.reply = {
+			wholeMsg: "",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 1
+		};
+		scope.reply.wholeMsg = "test";
+		scope.tempReply = [];
+		scope.addReply(scope.todo, scope.reply);
+		
+		scope.reply.wholeMsg = "";
+		scope.addReply(scope.todo, scope.reply);
+	  });
+	  
+	  it('revertEditing Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.todo = {
+			wholeMsg: "asd",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0
+		};
+		
+		scope.message = {
+			wholeMsg: "asd",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0
+		};
+		scope.removeReply(scope.todo, scope.message);
+	  });
+	  
+	  it('adminLogin Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.userName = "comp3111@ust.hk";
+		scope.userPassword = "love!sung";
+		scope.adminLogin();
+		
+		scope.userName = "abc";
+		scope.userPassword = "abc";
+		scope.adminLogin();
+	  });
+	  
+	  it('adminLogout Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.adminLogout();
+	  });
+	  
+	  it('setNewNotification Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.setNewNotification(false);
+		scope.setNewNotification(true);
+	  });
+	  
+	  it('privateRoomLogin Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		scope.incorrectRoomPassword = false;
+		
+		scope.roomPasswordInput = 'abc';
+		scope.roomPassword = 'abc';
+		scope.privateRoomLogin();
+		
+		scope.roomPasswordInput = 'abc';
+		scope.roomPassword = '123';
+		scope.privateRoomLogin();
+	  });
+	  
+	  it('toggleReply Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		
+		scope.todo = {
+			wholeMsg: "asd",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0,
+			showReply: true
+		};
+		
+		scope.toggleReply(scope.todo);
+		
+		scope.todo = {
+			wholeMsg: "asd",
+			head: "head",
+			headLastChar: "?",
+			desc: "desc",
+			//linkedDesc: "linkedDesc",
+			completed: false,
+			timestamp: new Date().getTime(), // latest
+			//tags: "...",
+			echo: 0,
+			order: 0,
+			showReply: false
+		};
+		
+		scope.toggleReply(scope.todo);
 	  });
 	  
 	  /************************ directive ************************/
@@ -424,6 +623,8 @@ describe('TodoCtrl', function() {
 		});
 		
 	  });
+	  
+	  
     });
   });
 
