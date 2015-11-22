@@ -18,7 +18,7 @@ function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $time
 	$scope.maxQuestion = scrollCountDelta;
 	$scope.incorrectAdminInfo = false;
 	$scope.askFixedPost = false;
-
+	$scope.roomPasswordProtected = false;
 	/*
 	$(window).scroll(function(){
 	if($(window).scrollTop() > 0) {
@@ -53,7 +53,6 @@ $scope.roomId = roomId;
 // private room
 var privateURL = firebaseURL + roomId;
 var privateRef = new Firebase(privateURL);
-$scope.roomPasswordProtected = false;
 privateRef.once('value', function(data){
 	if(data.child('password').val() != '' && data.child('password').val() != null){
 		$scope.roomPasswordProtected = true;
