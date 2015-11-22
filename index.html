@@ -126,6 +126,8 @@
 			var echoRef = new Firebase(url);
 			
 			$scope.globalSearch = function(){
+				document.getElementById("searchResult").innerHTML = "";
+				document.getElementById("searchResult").innerHTML = '<tr><th width="30%">Room</th><th width="70%">Question</th></tr>';
 				if ($scope.globalSearchValue.length == 0)
 					return;
 				echoRef.on('value', function(data){
@@ -136,7 +138,7 @@
 								var element = document.createElement("tr");
 								var roomName = '<a href="question2.html#/' + room.key() + '">' + (room.key().length > 10?room.key().substring(0, 9) + "...":room.key()) + '</a>';
 								element.innerHTML += '<td>' + roomName + '</td>';
-								element.innerHTML += "<td>" + question.child('wholeMsg').val() + "</td>";
+								element.innerHTML += "<td>" + (question.child('wholeMsg').val().length > 30 ? question.child('wholeMsg').val().substring(0, 29) + "...":question.child('wholeMsg').val()) + "</td>";
 								table.appendChild(element);
 								//$scope.resultList.push(room.key() + " " + question.child('wholeMsg').val());
 							}
