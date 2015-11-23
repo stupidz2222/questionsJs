@@ -135,7 +135,7 @@
 				var resultCount = 0;
 				if ($scope.globalSearchValue.length == 0)
 					return;
-				echoRef.on('value', function(data){
+				echoRef.once('value', function(data){
 					data.forEach(function(room){
 						room.child('questions').forEach(function(question){
 							if (question.child('wholeMsg').val().match($scope.globalSearchValue)){
@@ -163,7 +163,7 @@
 		{
 			var url = "https://flickering-torch-4928.firebaseIO.com";
 			var echoRef = new Firebase(url);
-			echoRef.on('value', function(data){
+			echoRef.once('value', function(data){
 				var table = document.getElementById("roomTableContent");
 				var i = 0;
 				data.forEach(function(room){

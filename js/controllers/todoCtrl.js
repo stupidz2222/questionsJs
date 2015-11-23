@@ -49,7 +49,7 @@ privateRef.once('value', function(data){
 // room List
 $scope.roomList = [];
 var roomRef = new Firebase(firebaseURL);
-roomRef.on('value', function(data){
+roomRef.once('value', function(data){
 	data.forEach(function(room){
 		$scope.roomList.push(room.key());
 	});
