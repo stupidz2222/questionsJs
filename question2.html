@@ -60,7 +60,7 @@
 		</div>
 	</div>
 	<!-- Private room login -->
-	<div id="privateRoomPassword" ng-show="roomPasswordProtected">
+	<div id="privateRoomPassword" ng-show="roomPasswordProtected" ng-cloak>
 		<div id="privateRoomPasswordPanel">
 			<div align="center">
 				<img src="css/images/logo4.png" width="30%" />
@@ -158,25 +158,44 @@
 							-->
 							<span ng-class="{completed: todo.completed}">{{todo.head}}</span>
 							<span style="float:right;font-weight:none;font-size:14px;">{{todo.timestamp | timeago}}</span>
+							
 						</h4>
 						<p class="list-group-item-text"><span>{{todo.desc}}</span><!--<span ng-bind-html="todo.trustedDesc"></span>-->
 
 						<!--<span ng-show="todo.tags">tags: {{todo.tags}}</span>--></p>
 
-						<div style="float:right">
+						<div align="right">
 							<button class="btn btn-success btn-xs" ng-click="addEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-up"></span></button>
 							{{todo.echo}}
 							<button class="btn btn-danger btn-xs" ng-click="subtractEcho(todo)" ng-disabled="$storage[todo.$id]"><span class="glyphicon glyphicon-thumbs-down"></span></button>
 							<!--<button ng-show="isAdmin" class="btn btn-default btn-xs glyphicon glyphicon-check" ng-click="toggleCompleted(todo)">Toggle Completed</button>-->
 							<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeTodo(todo)"><span class="glyphicon glyphicon-trash"></span></button>
 							<!--<button class="btn btn-default btn-xs glyphicon glyphicon-plus" ng-click="addReply(todo)">Reply</button>-->
+							<button class="btn btn-default btn-xs glyphicon glyphicon-comment" ng-click="toggleReply(todo)"></button>
+							<!--<button class="btn btn-default btn-xs glyphicon glyphicon-comment" ng-click="addReply(todo)"></button>-->
+							{{$storage.replyCount[todo.$id]}}
+							
 						</div>
-						<div>	
-							<span ng-repeat="reply in replies | filter: {$id : todo.$id}">
-								<span class="list-group-item" ng-repeat="message in reply" style="margin-top:40px">
+						<div class="questionReply" ng-show="$storage.showReply[todo.$id]">	
+							<span ng-repeat="reply in replies | filter: {$id : todo.$id} as replyCount" >
+								<span class="list-group-item" ng-repeat="message in reply">
 									<span>{{message.wholeMsg}}</span>
+									<span style="float:right;font-size:10px">{{message.timestamp | timeago}}</span>
+									<div style="float:right">
+										<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeReply(todo, message)"><span class="glyphicon glyphicon-trash"></span></button>
+									</div>
 								</span>
 							</span>
+							<div style="width:100%">
+								<div>
+									<textarea type="text" class="new-reply" 
+									placeholder="Reply"
+									ng-model="reply.wholeMsg"></textarea>
+								</div>
+								<div align="right">
+									<span ng-click="addReply(todo, reply)" class="replyQuestion">Reply</span>
+								</div>
+							</div>
 						</div>
 
 				</span> <!-- end of Fix post -->
@@ -204,9 +223,9 @@
 							<button ng-show="isAdmin" class="btn btn-info btn-xs" aria-hidden="true" ng-click="removeTodo(todo)"><span class="glyphicon glyphicon-trash"></span></button>
 							<button class="btn btn-default btn-xs glyphicon glyphicon-comment" ng-click="toggleReply(todo)"></button>
 							<!--<button class="btn btn-default btn-xs glyphicon glyphicon-comment" ng-click="addReply(todo)"></button>-->
-							{{todo.replyCount}}
+							{{$storage.replyCount[todo.$id]}}
 						</div>
-						<div class="questionReply" ng-show="todo.showReply">	
+						<div class="questionReply" ng-show="$storage.showReply[todo.$id]">	
 							<span ng-repeat="reply in replies | filter: {$id : todo.$id}" >
 								<span class="list-group-item" ng-repeat="message in reply">
 									<span>{{message.wholeMsg}}</span>

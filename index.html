@@ -63,8 +63,10 @@
 			<div class="content" id="searchQuestion">
 				<div>
 					<!--<img src="css/images/info.png" width="100%" />-->
+					
 					<input style="color:black" placeholder="Search for a question." type="text" ng-model="globalSearchValue"></input>
 					<button class="btn btn-default" ng-click="globalSearch()">Search</button>
+					<p style="text-align:center;color:red" ng-show="noResult">There are no matching results</p>
 					<div id="searchResultWrapper">
 					<table id="searchResult" width="100%">
 						<tr>
@@ -122,12 +124,15 @@
 				$window.location.href = 'question2.html#/' + $scope.example.text;
 			}
 			
+			$scope.noResult = false;
 			var url = "https://flickering-torch-4928.firebaseIO.com";
 			var echoRef = new Firebase(url);
 			
 			$scope.globalSearch = function(){
+				$scope.noResult = false;
 				document.getElementById("searchResult").innerHTML = "";
 				document.getElementById("searchResult").innerHTML = '<tr><th width="30%">Room</th><th width="70%">Question</th></tr>';
+				var resultCount = 0;
 				if ($scope.globalSearchValue.length == 0)
 					return;
 				echoRef.on('value', function(data){
@@ -140,10 +145,13 @@
 								element.innerHTML += '<td>' + roomName + '</td>';
 								element.innerHTML += "<td>" + (question.child('wholeMsg').val().length > 30 ? question.child('wholeMsg').val().substring(0, 29) + "...":question.child('wholeMsg').val()) + "</td>";
 								table.appendChild(element);
+								resultCount++;
 								//$scope.resultList.push(room.key() + " " + question.child('wholeMsg').val());
 							}
 						});
 					});
+					if (resultCount == 0)
+						$scope.noResult = true;
 				});
 			}
 			

@@ -578,6 +578,18 @@ describe('TodoCtrl', function() {
 		scope.toggleReply(scope.todo);
 	  });
 	  
+	  it('toggleFixedPost Testing', function(){
+		var ctrl = controller('TodoCtrl', {
+          $scope: scope,
+		  $window: window
+        });//
+		scope.askFixedPost = false;
+		scope.toggleFixedPost();
+		
+		scope.askFixedPost = true;
+		scope.toggleFixedPost();
+	  });
+	  
 	  /************************ directive ************************/
 	  it('todomvc directive keydown Testing', function(){
 		var ctrl = controller('TodoCtrl', {
