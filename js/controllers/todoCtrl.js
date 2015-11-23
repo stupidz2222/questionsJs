@@ -17,7 +17,8 @@ function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $time
 	var scrollCountDelta = 100;
 	$scope.maxQuestion = scrollCountDelta;
 	$scope.incorrectAdminInfo = false;
-
+	$scope.askFixedPost = false;
+	$scope.roomPasswordProtected = false;
 	/*
 	$(window).scroll(function(){
 	if($(window).scrollTop() > 0) {
@@ -52,7 +53,6 @@ $scope.roomId = roomId;
 // private room
 var privateURL = firebaseURL + roomId;
 var privateRef = new Firebase(privateURL);
-$scope.roomPasswordProtected = false;
 privateRef.once('value', function(data){
 	if(data.child('password').val() != '' && data.child('password').val() != null){
 		$scope.roomPasswordProtected = true;
@@ -172,7 +172,12 @@ $scope.addTodo = function () {
 	var firstAndLast = $scope.getFirstAndRestSentence(newTodo);
 	var head = firstAndLast[0];
 	var desc = firstAndLast[1];
-
+	
+	// admin ask fixed post
+	var tempOrder = 0;
+	if ($scope.askFixedPost == true)
+		tempOrder = 1;
+	
 	$scope.todos.$add({
 		wholeMsg: newTodo,
 		head: head,
@@ -184,7 +189,7 @@ $scope.addTodo = function () {
 		timestamp: new Date().getTime(),
 		//tags: "...",
 		echo: 0,
-		order: 0
+		order: tempOrder
 	});
 	
 	// remove the posted question in the input
@@ -371,6 +376,7 @@ $scope.adminLogout = function(){
 	echoRef.unauth();
 	delete $scope.$storage.authData;
 	$scope.isAdmin = false;
+	$scope.askFixedPost = false;
 }
 
 $scope.setNewNotification = function(show){
@@ -384,6 +390,14 @@ $scope.privateRoomLogin = function(){
 	}
 	$scope.roomPasswordProtected = false;
 }
+
+$scope.toggleFixedPost = function(){
+	if ($scope.askFixedPost == false)
+		$scope.askFixedPost = true;
+	else
+		$scope.askFixedPost = false;
+}
+
 $scope.reloadRoute = function(){
 	$window.location.reload();
 }

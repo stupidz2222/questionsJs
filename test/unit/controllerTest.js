@@ -127,7 +127,7 @@ describe('TodoCtrl', function() {
         var ctrl = controller('TodoCtrl', {
           $scope: scope
         });
-
+		
         var testInputs = [
           {str:"Hello? This is Sung", exp: "Hello?"},
           {str:"Hello.co? ! This is Sung", exp: "Hello.co?"},
@@ -215,6 +215,7 @@ describe('TodoCtrl', function() {
 		}];
 		
 		expect(scope.todos.length).toBe(2);
+		
 	  });
 	  
 	  it('editTodo Testing', function(){
