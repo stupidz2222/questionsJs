@@ -1,0 +1,40 @@
+.input-group
+{
+	float:left;
+}
+
+.form-control
+{
+	width: 80%;
+}
+
+.siteWrapper
+{
+	width: 60%;
+	margin-top: 80px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.panel-heading
+{
+	font-weight: bold;
+}
+html, body
+{
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	background-color: rgb(70,64,64);
+}
+#banner{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 60px;
+	background-color: white;
+}
+#roomTable
+{
+}
+

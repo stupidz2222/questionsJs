@@ -62,9 +62,9 @@
 			</div>
 			<div class="content" id="searchQuestion">
 				<div>
-					<!--<img src="css/images/info.png" width="100%" />-->
 					<input style="color:black" placeholder="Search for a question." type="text" ng-model="globalSearchValue"></input>
 					<button class="btn btn-default" ng-click="globalSearch()">Search</button>
+					<p style="text-align:center;color:red" ng-show="noResult">There are no matching results</p>
 					<div id="searchResultWrapper">
 					<table id="searchResult" width="100%">
 						<tr>
@@ -119,31 +119,39 @@
 			};
 
 			$scope.join = function () {
-				$window.location.href = 'question2.html#/' + $scope.example.text;
+				$window.location.href = 'question.html#/' + $scope.example.text;
 			}
 			
+			$scope.noResult = false;
 			var url = "https://flickering-torch-4928.firebaseIO.com";
 			var echoRef = new Firebase(url);
 			
+			// global search
 			$scope.globalSearch = function(){
+				// clear searched result before each search
+				$scope.noResult = false;
 				document.getElementById("searchResult").innerHTML = "";
 				document.getElementById("searchResult").innerHTML = '<tr><th width="30%">Room</th><th width="70%">Question</th></tr>';
+				var resultCount = 0;
 				if ($scope.globalSearchValue.length == 0)
 					return;
-				echoRef.on('value', function(data){
+				echoRef.once('value', function(data){
 					data.forEach(function(room){
 						room.child('questions').forEach(function(question){
 							if (question.child('wholeMsg').val().match($scope.globalSearchValue)){
 								var table = document.getElementById("searchResult");
 								var element = document.createElement("tr");
-								var roomName = '<a href="question2.html#/' + room.key() + '">' + (room.key().length > 10?room.key().substring(0, 9) + "...":room.key()) + '</a>';
+								var roomName = '<a href="question.html#/' + room.key() + '">' + (room.key().length > 10?room.key().substring(0, 9) + "...":room.key()) + '</a>';
 								element.innerHTML += '<td>' + roomName + '</td>';
 								element.innerHTML += "<td>" + (question.child('wholeMsg').val().length > 30 ? question.child('wholeMsg').val().substring(0, 29) + "...":question.child('wholeMsg').val()) + "</td>";
 								table.appendChild(element);
-								//$scope.resultList.push(room.key() + " " + question.child('wholeMsg').val());
+								resultCount++;
 							}
 						});
 					});
+					// error message for empty result
+					if (resultCount == 0)
+						$scope.noResult = true;
 				});
 			}
 			
@@ -151,38 +159,28 @@
 		
 		
 		// room list
-		// var app = angular.module('app',["firebase"]);
 		app.controller('roomController',['$scope','$firebaseArray',function($scope,$firebaseArray)
 		{
 			var url = "https://flickering-torch-4928.firebaseIO.com";
 			var echoRef = new Firebase(url);
-			/*
-			var query = echoRef.orderByChild("true"); //The parameter does not exist so it will display all child in alphabetical order
-			var rooms = $firebaseArray(query);
-			*/
-			echoRef.on('value', function(data){
+			echoRef.once('value', function(data){
 				var table = document.getElementById("roomTableContent");
 				var i = 0;
 				data.forEach(function(room){
-					
+					// generate room list content
 					var element = document.createElement("tr");
+					// hot room if questions over 30
 					if (room.child('questions').numChildren() >= 30)
-						element.innerHTML = '<td><img src="css/images/hotIcon.png" width=\"30px\" /><a href="question2.html#/'+room.key()+'">'+(room.key().length > 20 ? room.key().substring(0, 19) + "...": room.key())+'</a></td>';
+						element.innerHTML = '<td><img src="css/images/hotIcon.png" width=\"30px\" /><a href="question.html#/'+room.key()+'">'+(room.key().length > 20 ? room.key().substring(0, 19) + "...": room.key())+'</a></td>';
 					else
-						element.innerHTML = '<td><a href="question2.html#/'+room.key()+'">'+(room.key().length > 20 ? room.key().substring(0, 19) + "...": room.key())+'</a></td>';
+						element.innerHTML = '<td><a href="question.html#/'+room.key()+'">'+(room.key().length > 20 ? room.key().substring(0, 19) + "...": room.key())+'</a></td>';
+					// check private room
 					var image = (room.child('password').val()!=null&&room.child('password').val()!=''?'<img src=\"css/images/lockRoom.png\" height=\"30px\">':'<img src=\"css/images/unlockRoom.png\" height=\"30px\">');
 					element.innerHTML += '<td>' + image + '</td>';
 					element.innerHTML += "<td>" + room.child('questions').numChildren() + "</td>";
 					table.appendChild(element);
 					i++;
-					/*
-					var row = table.insertRow(i);
-					//row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+room.key()+'" style="color:black; padding:30px 30px 10px 10px;" class="list-group-item list-group-item-info">'+room.key()+'</a>';
-					row.insertCell(0).innerHTML = '<a href="http://q.comp3111.xyz/question.html#/'+room.key()+'">'+room.key()+'</a>';
-					i++;
-					*/
 				});
-				//$scope.rooms = rooms;
 			});
 			
 			

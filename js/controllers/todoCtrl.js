@@ -14,20 +14,14 @@ function ($scope, $location, $firebaseArray, $sce, $localStorage, $window, $time
 	$scope.newNotification = false;
 	
 	var newMessageToggle;
-	var scrollCountDelta = 100;
+	var scrollCountDelta = 500;
 	$scope.maxQuestion = scrollCountDelta;
 	$scope.incorrectAdminInfo = false;
 	$scope.askFixedPost = false;
 	$scope.roomPasswordProtected = false;
-	/*
-	$(window).scroll(function(){
-	if($(window).scrollTop() > 0) {
-	$("#btn_top").show();
-} else {
-$("#btn_top").hide();
-}
-});
-*/
+	$scope.$storage.replyCount = [];
+	$scope.$storage.showReply = [];
+	
 var splits = $location.path().trim().split("/");
 var roomId = angular.lowercase(splits[1]);
 if (!roomId || roomId.length === 0) {
@@ -39,16 +33,6 @@ if (!roomId || roomId.length === 0) {
 
 var firebaseURL = "https://flickering-torch-4928.firebaseIO.com/";
 
-// room List
-$scope.roomList = [];
-var roomRef = new Firebase(firebaseURL);
-roomRef.on('value', function(data){
-	data.forEach(function(room){
-		$scope.roomList.push(room.key());
-	});
-});
-
-$scope.roomId = roomId;
 
 // private room
 var privateURL = firebaseURL + roomId;
@@ -62,6 +46,18 @@ privateRef.once('value', function(data){
 	}
 });
 
+// room List
+$scope.roomList = [];
+var roomRef = new Firebase(firebaseURL);
+roomRef.once('value', function(data){
+	data.forEach(function(room){
+		$scope.roomList.push(room.key());
+	});
+});
+
+$scope.roomId = roomId;
+
+
 /* setting up $scope.todos */
 var url = firebaseURL + roomId + "/questions/";
 var echoRef = new Firebase(url);
@@ -70,7 +66,7 @@ var query = echoRef.orderByChild("order");
 //.limitToFirst(1000);
 $scope.todos = $firebaseArray(query);
 $scope.todos.forEach(function (todo) {
-	todo.showReply = false;
+	$scope.$storage.showReply[todo.$id] = false;
 });
 
 /* setting up $scope.replies */
@@ -87,17 +83,16 @@ if ($scope.$storage.authData != null){
 	$scope.isAdmin = true;
 }
 
+// emoji for new room
+$timeout(function(){
+	twemoji.size = '36x36';
+	twemoji.parse(document.querySelector('body'));
+}, 1000);
+
 // pre-precessing for collection
 $scope.$watchCollection('todos', function () {
 	var total = 0;
 	var remaining = 0;
-	
-	// reply count
-	replyEchoRef.on('value', function(data){
-		$scope.todos.forEach(function(todo){
-			todo.replyCount = data.child(todo.$id).numChildren();
-		});
-	});
 	
 	$scope.todos.forEach(function (todo) {
 		// Skip invalid entries so they don't break the entire app.
@@ -109,7 +104,7 @@ $scope.$watchCollection('todos', function () {
 		if (todo.completed === false) {
 			remaining++;
 		}
-		todo.tags = todo.wholeMsg.match(/#\w+/g);
+		//todo.tags = todo.wholeMsg.match(/#\w+/g);
 	});
 
 	// new questions notification
@@ -124,6 +119,15 @@ $scope.$watchCollection('todos', function () {
 		twemoji.parse(document.querySelector('body'));
 	}, 0);
 
+	// reply count
+	replyEchoRef.on('value', function(data){
+		$scope.todos.forEach(function(todo){
+			if (data.child(todo.$id).numChildren() == 0)
+				$scope.$storage.replyCount[todo.$id] = 0;
+			else
+				$scope.$storage.replyCount[todo.$id] = data.child(todo.$id).numChildren();
+		});
+	});
 
 	$scope.totalCount = total;
 	$scope.remainingCount = remaining;
@@ -199,11 +203,15 @@ $scope.addTodo = function () {
 
 $scope.addReply = function (todo, reply) {
 	var newReply = reply.wholeMsg.trim();
+	
 	// No input, so just do nothing
 	if (!newReply.length) {
 		return;
 	}
 	// setting the path to the reply directory
+	var firstAndLast = $scope.getFirstAndRestSentence(newReply);
+	var head = firstAndLast[0];
+	var desc = firstAndLast[1];
 	
 	var questionId = todo.$id;
 	var url = replyUrl + questionId;
@@ -214,9 +222,9 @@ $scope.addReply = function (todo, reply) {
 	
 	$scope.tempReply.$add({
 		wholeMsg: newReply,
-		head: '',
-		headLastChar: '',
-		desc: '',
+		head: head,
+		headLastChar: head.slice(-1),
+		desc: desc,
 		//linkedDesc: Autolinker.link(desc, {newWindow: false, stripPrefix: false}),
 		newQuestion: true,
 		completed: false,
@@ -252,6 +260,7 @@ $scope.subtractEcho = function (todo) {
 	// Disable the button
 	$scope.$storage[todo.$id] = "echoed";
 };
+
 $scope.doneEditing = function (todo) {
 	$scope.editedTodo = null;
 	var wholeMsg = todo.wholeMsg.trim();
@@ -267,13 +276,14 @@ $scope.revertEditing = function (todo) {
 	$scope.doneEditing(todo);
 };
 
+// remove question
 $scope.removeTodo = function (todo) {
 	$scope.todos.$remove(todo);
 };
 
+// remove reply from a certain question
 $scope.removeReply = function(todo, message){
 	var tempReplyRef = new Firebase(replyUrl + todo.$id + '/');
-	//var tempReplyQuery = tempReplyRef.orderByChild("order");
 	tempReplyRef.on('value', function(data){
 		data.forEach(function(reply){
 			if (reply.child('wholeMsg').val()==message.wholeMsg && reply.child('timestamp').val()==message.timestamp){
@@ -281,12 +291,7 @@ $scope.removeReply = function(todo, message){
 				removeReplyRef.remove();
 			}
 		});
-	});
-	//alert(tempReplyRef.child(message));
-	
-	//$scope.tempReply2 = $firebaseArray(tempReplyQuery);
-	
-	
+	});	
 };
 
 $scope.clearCompletedTodos = function () {
@@ -340,16 +345,19 @@ angular.element($window).bind("scroll", function() {
 	}
 });
 
+// administrator login
 $scope.adminLogin = function(){
+	// show loading spinner
 	$scope.loading = true;
+	// firebase email&password authentication
 	echoRef.authWithPassword({
 		email    : $scope.userName.trim(),
 		password : $scope.userPassword.trim()
 	}, function(error, authData) {
 		$scope.loading = false;
+		// login success
 		if (error === null){
 			// alert(authData.password.email.toString() + "login success");
-			//$('#adminLogin').append(authData.password.email.toString());
 			$scope.$apply(function(){
 				$scope.$storage.authData = authData;
 				$scope.$authData = authData;
@@ -358,6 +366,7 @@ $scope.adminLogin = function(){
 			angular.element(document.querySelector('#adminLogin')).css('display', 'none');
 			$scope.incorrectAdminInfo = false;
 		}
+		// login fail
 		else{
 			$scope.$apply(function(){
 				$scope.incorrectAdminInfo = true;
@@ -370,18 +379,20 @@ $scope.adminLogin = function(){
 	});
 }
 
+// administrator logout
 $scope.adminLogout = function(){
-
-	//var ref = new Firebase(firebaseURL);
 	echoRef.unauth();
 	delete $scope.$storage.authData;
 	$scope.isAdmin = false;
 	$scope.askFixedPost = false;
 }
 
+// toggle new notification
 $scope.setNewNotification = function(show){
 	$scope.newNotification = show;
 }
+
+// private room login
 $scope.privateRoomLogin = function(){
 	if ($scope.roomPasswordInput != $scope.roomPassword){
 		$scope.incorrectRoomPassword = true;
@@ -391,6 +402,7 @@ $scope.privateRoomLogin = function(){
 	$scope.roomPasswordProtected = false;
 }
 
+// administrator wants to send fixed post in a certain room
 $scope.toggleFixedPost = function(){
 	if ($scope.askFixedPost == false)
 		$scope.askFixedPost = true;
@@ -402,18 +414,19 @@ $scope.reloadRoute = function(){
 	$window.location.reload();
 }
 
+// question toggle the display of reply panel
 $scope.toggleReply = function(todo){
-	if (todo.showReply == true)
-		todo.showReply = false;
+	if ($scope.$storage.showReply[todo.$id] == true)
+		$scope.$storage.showReply[todo.$id] = false;
 	else
-		todo.showReply = true;
+		$scope.$storage.showReply[todo.$id] = true;
 }
 
 $scope.backRoute = function(){
 	$window.history.back();
 	$timeout(function(){
 		$scope.reloadRoute();
-		}, 500);
+	}, 500);
 }
 
 }]);
