@@ -242,6 +242,7 @@
 					<span ng-click="addTodo()" id="ask" class="input-group-btn"></span>
 					<div id="emojiPopup"></div>
 					<div id="emojiPanel"></div>
+					<div id="fixedPostSelect" ng-click="toggleFixedPost()" ng-show="isAdmin"><span class="glyphicon glyphicon-pushpin"></span></div>
 				</div>
 			</div>
 		</div>
@@ -328,6 +329,13 @@
 				$('#emojiPanel').css('display', 'block');
 		});
 
+		// toggle fixed post icon
+		$('#fixedPostSelect').on('click', function(){
+			if ($(this).css('color') == "rgb(0, 0, 0)")
+				$(this).css('color', 'red');
+			else
+				$(this).css('color', 'black');
+		});
 	});
 </script>
 </body>
