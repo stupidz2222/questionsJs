@@ -306,7 +306,7 @@ describe('TodoCtrl', function() {
 		var temp = scope.maxQuestion;
 		scope.totalCount = scope.maxQuestion + 10;
 		scope.increaseMax();
-		expect(scope.maxQuestion).toBe(200);
+		expect(scope.maxQuestion).toBe(1000);
 	  });
 	  
 	  it('clearCompletedTodos Testing', function(){
